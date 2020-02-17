@@ -7,15 +7,16 @@ import { NotificationsComponent } from "../../pages/notifications/notifications.
 import { UserComponent } from "../../pages/user/user.component";
 import { TablesComponent } from "../../pages/tables/tables.component";
 import { TypographyComponent } from "../../pages/typography/typography.component";
+import { AuthGuardService } from 'src/app/services/auth/auth-guard.service';
 // import { RtlComponent } from "../../pages/rtl/rtl.component";
 
 export const AdminLayoutRoutes: Routes = [
-  { path: "dashboard", component: DashboardComponent },
-  { path: "icons", component: IconsComponent },
-  { path: "maps", component: MapComponent },
-  { path: "notifications", component: NotificationsComponent },
+  { path: "dashboard", component: DashboardComponent, canActivate: [AuthGuardService] },
+  { path: "icons", component: IconsComponent, canActivate: [AuthGuardService] },
+  { path: "maps", component: MapComponent, canActivate: [AuthGuardService] },
+  { path: "notifications", component: NotificationsComponent, canActivate: [AuthGuardService] },
   { path: "user", component: UserComponent },
-  { path: "tables", component: TablesComponent },
-  { path: "typography", component: TypographyComponent },
+  { path: "tables", component: TablesComponent, canActivate: [AuthGuardService] },
+  { path: "typography", component: TypographyComponent, canActivate: [AuthGuardService] },
   // { path: "rtl", component: RtlComponent }
 ];

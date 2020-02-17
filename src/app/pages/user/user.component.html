@@ -3,6 +3,110 @@
   <div class=" row">
     <div class=" col-md-8">
       <div class=" card">
+        <div class=" card-header"><h5 class=" title">Inicio de sesion</h5></div>
+        <div class=" card-body">
+          <form [formGroup]="userForm">
+            <div class=" row">
+              <div class=" col-md-5 pr-md-1">
+                <div class=" form-group">
+                  <label> Empresa (deshabilitado) </label>
+                  <input
+                    class=" form-control"
+                    placeholder="Company"
+                    type="text"
+                    formControlName="company"
+                  />
+                </div>
+              </div>
+              <div class=" col-md-3 px-md-1">
+                <div class=" form-group">
+                  <label> Username </label>
+                  <input
+                    class=" form-control"
+                    placeholder="Username"
+                    type="text"
+                    formControlName="userName"
+                  />
+                </div>
+              </div>
+              <div class=" col-md-4 pl-md-1">
+                <div class=" form-group">
+                  <label for="exampleInputEmail1"> Password </label>
+                  <input
+                    class=" form-control"
+                    placeholder="password"
+                    type="password"
+                    formControlName="password"
+                  />
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class=" card-footer">
+          <button class=" btn btn-fill btn-danger" (click)="validateUser()" [disabled]="userForm.pristine">Ingresar</button>
+        </div>
+      </div>
+    </div>
+    <div class=" col-md-4">
+      <div class=" card card-user">
+        <div class=" card-body">
+          <p class=" card-text"></p>
+          <div class=" author">
+            <div class=" block block-one"></div>
+            <div class=" block block-two"></div>
+            <div class=" block block-three"></div>
+            <div class=" block block-four"></div>
+            <a href="javascript:void(0)">
+              <img alt="..." class=" avatar" src="assets/img/emilyz.jpg" />
+
+              <h5 class=" title">M&M Consultores</h5>
+            </a>
+            <p class=" description">Ceo/Co-Founder</p>
+          </div>
+          <div class=" card-description">
+            Do not be scared of the truth because we need to restart the human
+            foundation in truth And I love you like Kanye loves Kanye I love
+            Rick Owens’ bed design but the back is...
+          </div>
+        </div>
+        <div class=" card-footer">
+          <div class=" button-container">
+            <button
+              class=" btn btn-icon btn-round btn-facebook"
+              href="javascript:void(0)"
+            >
+              <i class=" fab fa-facebook"> </i>
+            </button>
+            <button
+              class=" btn btn-icon btn-round btn-twitter"
+              href="javascript:void(0)"
+            >
+              <i class=" fab fa-twitter"> </i>
+            </button>
+            <button
+              class=" btn btn-icon btn-round btn-google"
+              href="javascript:void(0)"
+            >
+              <i class=" fab fa-google-plus"> </i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<!--
+  
+<div class=" content">
+  <div class=" row">
+    <div class=" col-md-8">
+      <div class=" card">
         <div class=" card-header"><h5 class=" title">Edit Profile</h5></div>
         <div class=" card-body">
           <form>
@@ -184,3 +288,5 @@ Lamborghini Mercy, Your chick she so thirsty, I'm in that two seat Lambo.
     </div>
   </div>
 </div>
+
+-->
