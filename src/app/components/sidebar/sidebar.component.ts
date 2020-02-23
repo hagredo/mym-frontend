@@ -16,21 +16,28 @@ export const ROUTES: RouteInfo[] = [
     class: ""
   },
   {
+    path: "/edit-project",
+    title: "Proyectos",
+    rtlTitle: "لوحة القيادة",
+    icon: "icon-notes",
+    class: ""
+  },
+  {
     path: "/icons",
-    title: "Icons",
+    title: "Clientes",
     rtlTitle: "الرموز",
-    icon: "icon-atom",
+    icon: "icon-satisfied",
     class: ""
   },
   {
     path: "/maps",
-    title: "Maps",
+    title: "Equipos",
     rtlTitle: "خرائط",
-    icon: "icon-pin",
+    icon: "icon-single-02",
     class: "" },
   {
     path: "/notifications",
-    title: "Notifications",
+    title: "Notificaciones",
     rtlTitle: "إخطارات",
     icon: "icon-bell-55",
     class: ""
@@ -38,23 +45,23 @@ export const ROUTES: RouteInfo[] = [
 
   {
     path: "/user",
-    title: "User Profile",
+    title: "Informes",
     rtlTitle: "ملف تعريفي للمستخدم",
-    icon: "icon-single-02",
+    icon: "icon-paper",
     class: ""
   },
   {
     path: "/tables",
-    title: "Table List",
+    title: "Etapas",
     rtlTitle: "قائمة الجدول",
     icon: "icon-puzzle-10",
     class: ""
   },
   {
     path: "/typography",
-    title: "Typography",
+    title: "Archivos",
     rtlTitle: "طباعة",
-    icon: "icon-align-center",
+    icon: "icon-single-copy-04",
     class: ""
   }/*,
   {

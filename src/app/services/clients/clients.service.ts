@@ -6,7 +6,7 @@ import { HttpConfig } from 'src/app/util/HttpConfig';
 @Injectable({
   providedIn: 'root'
 })
-export class UserService {
+export class ClientsService {
 
   private options: RequestOptions;
   private url: string;
@@ -14,12 +14,9 @@ export class UserService {
 
   constructor(private http: Http, private httpConfig : HttpConfig) { }
 
-  validUser(userName: string, password: string): Observable<Response> {
+  getAllClients() : Observable<Response>{
     this.options = this.httpConfig.getOptions();
-    this.varGet = new Array<string>();
-    this.varGet.push(userName);
-    this.varGet.push(password);
-    this.url = this.httpConfig.getUrl("userlogin", this.varGet);
+    this.url = this.httpConfig.getUrl("getAllClients");
     return this.http.get(this.url, this.options);
   }
 

@@ -17,6 +17,14 @@ import { TypographyComponent } from "../../pages/typography/typography.component
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { UserService } from 'src/app/services/user/user.service';
 import { HttpModule } from '@angular/http';
+import { EditProjectComponent } from 'src/app/pages/edit-project/edit-project.component';
+import { HttpConfig } from 'src/app/util/HttpConfig';
+import { ClientsService } from 'src/app/services/clients/clients.service';
+import { StageService } from 'src/app/services/stages/stage.service';
+import { TeamsService } from 'src/app/services/teams/teams.service';
+import { CityService } from 'src/app/services/cities/city.service';
+import { SaveService } from 'src/app/services/saveproyect/save.service';
+import { BusinessCardComponent } from 'src/app/pages/components/business-card/business-card.component';
 
 @NgModule({
   imports: [
@@ -36,10 +44,18 @@ import { HttpModule } from '@angular/http';
     TypographyComponent,
     NotificationsComponent,
     MapComponent,
+    EditProjectComponent,
+    BusinessCardComponent
     // RtlComponent
   ],
   providers: [
-    UserService
+    UserService,
+    HttpConfig,
+    ClientsService,
+    StageService,
+    TeamsService,
+    CityService,
+    SaveService
   ]
 })
 export class AdminLayoutModule {}

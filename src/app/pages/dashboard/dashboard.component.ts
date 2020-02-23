@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import Chart from 'chart.js';
+import { Router } from '@angular/router';
 
 @Component({
   selector: "app-dashboard",
@@ -14,8 +15,13 @@ export class DashboardComponent implements OnInit {
   public clicked: boolean = true;
   public clicked1: boolean = false;
   public clicked2: boolean = false;
+  public tituloProyecto: string = "Proyecto Uno";
 
-  constructor() {}
+  constructor(private router: Router) {}
+
+  addProject() {
+    this.router.navigate(['/edit-project']);
+  }
 
   ngOnInit() {
     var gradientChartOptionsConfigurationWithTooltipBlue: any = {

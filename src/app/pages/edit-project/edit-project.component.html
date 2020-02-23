@@ -1,0 +1,143 @@
+ 
+<div class=" content">
+  <div class=" row">
+    <div class=" col-md-8">
+      <div class=" card">
+        <div class=" card-header"><h5 class=" title">Agregar proyecto</h5></div>
+        <div class=" card-body">
+          <form [formGroup]="projectForm">
+            <div class=" row">
+              <div class=" col-md-4 pr-md-1">
+                <div class=" form-group">
+                  <label> Cliente </label>
+                  <select class=" form-control font-color" formControlName="client">
+                    <option value="0" selected>Seleccione...</option>
+                    <option 
+                      *ngFor="let client of clientList"
+                      [selected]="client.id === 0"
+                      [value]="client.id"
+                    >
+                      {{client.nombre}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class=" col-md-4 pr-md-1">
+                <div class=" form-group">
+                  <label> Ciudad </label>
+                  <select class=" form-control font-color" formControlName="city">
+                    <option value="0" selected>Seleccione...</option>
+                    <option 
+                      *ngFor="let city of cityList" 
+                      [selected]="city.id === 0"
+                      [value]="city.id"
+                    >
+                      {{city.nombre}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class=" row">
+              <div class=" col-md-5 pr-md-1">
+                <div class=" form-group">
+                  <label> Nombre </label>
+                  <input
+                    class=" form-control"
+                    placeholder="Nombre proyecto"
+                    type="text"
+                    formControlName="projectName"
+                  />
+                </div>
+              </div>
+              <div class=" col-md-4 pl-md-1">
+                <div class=" form-group">
+                  <label> Equipo </label>
+                  <select class=" form-control font-color" formControlName="team">
+                    <option value="0" selected>Seleccione...</option>
+                    <option 
+                      *ngFor="let team of teamList" 
+                      [selected]="team.id === 0"
+                      [value]="team.id"
+                    >
+                      {{team.nombre}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class=" row">
+              <div class=" col-md-3 pr-md-1">
+                <div class=" form-group">
+                  <label> Estado </label>
+                  <select class=" form-control font-color" formControlName="status">
+                    <option value="0" [selected]="0 === 0">Seleccione...</option>
+                    <option value="C">Creado</option>
+                    <option value="E">En ejecución</option>
+                    <option value="F">Finalizado</option>
+                  </select>
+                </div>
+              </div>
+              <div class=" col-md-4 pl-md-1">
+                <div class=" form-group">
+                  <label > Valor proyecto </label>
+                  <input
+                    class=" form-control"
+                    placeholder="Valor proyecto"
+                    type="number"
+                    formControlName="value"
+                  />
+                </div>
+              </div>
+            </div>
+            
+            <div class=" row">
+              <div class=" col-md-10 pr-md-1">
+                <div class=" table-responsive">
+                  <table class=" table  " id="">
+                    <thead class=" text-primary">
+                      <tr>
+                        <th>Nombre</th>
+                        <th>Peso</th>
+                        <th>Aplica</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let stage of stagesList">
+                        <td class="td-description">{{stage.nombre}}</td>
+                        <td class="td-weight"> 
+                            <div class=" form-group">
+                              <input
+                                class=" form-control weight-input"
+                                placeholder="Peso"
+                                type="number"
+                                #weight
+                              />
+                            </div>
+                        </td>
+                        <td class="td-apply">
+                          <input 
+                            class="apply-input" 
+                            type="checkbox"
+                            (click)="addStage(stage.id, weight.value)"
+                          />
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+          </form>
+        </div>
+        <div class=" card-footer">
+          <button class=" btn btn-fill btn-danger" (click)="createProject()">Crear</button>
+        </div>
+      </div>
+    </div>
+    <div class=" col-md-4">
+      <app-business-card></app-business-card>
+    </div>
+  </div>
+</div>

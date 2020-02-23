@@ -20,6 +20,11 @@ export class AuthGuardService implements CanActivate {
     return true;
   }
 
+  logOut() {
+    this.token = "";
+    this.router.navigate(['/']);
+  }
+
   getToken() {
     return this.token;
   }

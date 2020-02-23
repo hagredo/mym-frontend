@@ -1,16 +1,23 @@
 import { RequestOptions, Headers } from "@angular/http";
 import { environment } from "../../environments/environment";
+import { AuthGuardService } from '../services/auth/auth-guard.service';
+import { Injectable } from '@angular/core';
 
+@Injectable({
+  providedIn: 'root'
+})
 export class HttpConfig {
-  static apiUrl: string = environment.API_URL;
-  static url: string;
+  apiUrl: string = environment.API_URL;
+  url: string;
 
-  static getOptions(): RequestOptions {
-    let headers = new Headers({ "Content-Type": "application/json" });
+  constructor(private authService: AuthGuardService){}
+
+  getOptions(): RequestOptions {
+    let headers = new Headers({ "Content-Type": "application/json", "Authorization":  this.authService.getToken()});
     return new RequestOptions({ headers: headers });
   }
 
-  static getUrl(
+  getUrl(
     ref: string,
     get?: Array<string>,
     acceptNull: boolean = false

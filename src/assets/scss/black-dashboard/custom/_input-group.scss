@@ -24,7 +24,7 @@
         &:active,
         &:active{
             border: medium none;
-            background-color: lighten($black,2%);
+            background-color: redlighten($black,2%);
         }
     }
 
