@@ -18,11 +18,12 @@ export class EditProjectComponent implements OnInit {
   public clientList : any;
   public stagesList : any;
   public teamList : any;
-  public deliverablesList : any;
+  public deliverablesList : Array<any>;
   public projectForm: FormGroup;
   public stages: FormArray;
   public show : boolean = false;
   public iterador : number;
+  public chekedMap : Map<number, boolean>;
   constructor(
     private clientsService : ClientsService, 
     private stageService : StageService,
@@ -31,6 +32,8 @@ export class EditProjectComponent implements OnInit {
     private saveService : SaveService,
     private deliverablesService : DeliverableService
   ) {
+    this.deliverablesList = new Array<any>();
+    this.chekedMap = new Map<number, boolean>();
     this.stages = new FormArray([]);
     this.projectForm = new FormGroup({
       city: new FormControl('', Validators.required),
@@ -82,13 +85,13 @@ export class EditProjectComponent implements OnInit {
     return body;
   }
 
-  addStage(stageId:number, weight:number) {
-    debugger;
-    const stage = new FormGroup({
+  addStage(deliverableId:number, stage:number) {
+    /*const stage = new FormGroup({
       stageId: new FormControl(stageId),
       weight: new FormControl(weight)
     });
-    this.stages.push(stage);
+    this.stages.push(stage);*/
+    
   }
 
   getAllClients(){
@@ -168,7 +171,14 @@ export class EditProjectComponent implements OnInit {
     this.deliverablesService.getAllDeliverables().subscribe(
       response => {
         let resJson : any = response.json();
-        this.deliverablesList = resJson.deliverableList;
+        resJson.deliverableList.forEach(deliverable =>{
+          let objectDeliverable = {
+            id : deliverable.id,
+            nombre : deliverable.nombre,
+            checked : 'false'
+          };
+          this.deliverablesList.push(objectDeliverable);
+        });
       },
       error => {
         console.log('Error al cargar lista de entregables');
@@ -177,6 +187,7 @@ export class EditProjectComponent implements OnInit {
   }
 
   showDeliverables(i : any){
+    console.log(JSON.stringify(this.deliverablesList));
     if(i == this.iterador){
       this.iterador = -1;
     }else{
