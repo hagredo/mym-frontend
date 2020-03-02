@@ -23,7 +23,7 @@ export const ROUTES: RouteInfo[] = [
     class: ""
   },
   {
-    path: "/icons",
+    path: "/app-clientes",
     title: "Clientes",
     rtlTitle: "الرموز",
     icon: "icon-satisfied",

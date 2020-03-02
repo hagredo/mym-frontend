@@ -25,6 +25,7 @@ import { TeamsService } from 'src/app/services/teams/teams.service';
 import { CityService } from 'src/app/services/cities/city.service';
 import { SaveService } from 'src/app/services/saveproyect/save.service';
 import { BusinessCardComponent } from 'src/app/pages/components/business-card/business-card.component';
+import { DeliverableService } from 'src/app/services/deliverables/deliverable.service';
 
 @NgModule({
   imports: [
@@ -55,7 +56,8 @@ import { BusinessCardComponent } from 'src/app/pages/components/business-card/bu
     StageService,
     TeamsService,
     CityService,
-    SaveService
+    SaveService,
+    DeliverableService
   ]
 })
 export class AdminLayoutModule {}

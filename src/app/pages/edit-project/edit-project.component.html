@@ -3,11 +3,11 @@
   <div class=" row">
     <div class=" col-md-8">
       <div class=" card">
-        <div class=" card-header"><h5 class=" title">Agregar proyecto</h5></div>
+        <div class=" card-header"><h4 class=" title">Agregar proyecto</h4></div>
         <div class=" card-body">
           <form [formGroup]="projectForm">
             <div class=" row">
-              <div class=" col-md-4 pr-md-1">
+              <div class=" col-md-6 pr-md-1">
                 <div class=" form-group">
                   <label> Cliente </label>
                   <select class=" form-control font-color" formControlName="client">
@@ -22,7 +22,20 @@
                   </select>
                 </div>
               </div>
-              <div class=" col-md-4 pr-md-1">
+              <div class=" col-md-6 pr-md-1">
+                <div class=" form-group">
+                  <label> Nombre Proyecto </label>
+                  <input
+                    class=" form-control"
+                    placeholder="Nombre proyecto"
+                    type="text"
+                    formControlName="projectName"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class=" row">
+              <div class=" col-md-3 pr-md-1">
                 <div class=" form-group">
                   <label> Ciudad </label>
                   <select class=" form-control font-color" formControlName="city">
@@ -37,20 +50,7 @@
                   </select>
                 </div>
               </div>
-            </div>
-            <div class=" row">
-              <div class=" col-md-5 pr-md-1">
-                <div class=" form-group">
-                  <label> Nombre </label>
-                  <input
-                    class=" form-control"
-                    placeholder="Nombre proyecto"
-                    type="text"
-                    formControlName="projectName"
-                  />
-                </div>
-              </div>
-              <div class=" col-md-4 pl-md-1">
+              <div class=" col-md-3 pr-md-1">
                 <div class=" form-group">
                   <label> Equipo </label>
                   <select class=" form-control font-color" formControlName="team">
@@ -65,8 +65,6 @@
                   </select>
                 </div>
               </div>
-            </div>
-            <div class=" row">
               <div class=" col-md-3 pr-md-1">
                 <div class=" form-group">
                   <label> Estado </label>
@@ -78,9 +76,9 @@
                   </select>
                 </div>
               </div>
-              <div class=" col-md-4 pl-md-1">
+              <div class=" col-md-3 pr-md-1">
                 <div class=" form-group">
-                  <label > Valor proyecto </label>
+                  <label > Valor contrato </label>
                   <input
                     class=" form-control"
                     placeholder="Valor proyecto"
@@ -90,38 +88,59 @@
                 </div>
               </div>
             </div>
+            <div class=" row">
+              <div class="col-md-3 pr-md-1">
+                <div class=" form-group">
+                  <label> Fecha Inicial </label>
+                  <input class="form-control" type="date" />
+                </div>
+              </div>
+              <div class="col-md-3 pr-md-1">
+                <div class=" form-group">
+                  <label> Fecha Final </label>
+                  <input class="form-control " type="date" />
+                </div>
+              </div>
+              <div class="col-md-3 pr-md-1">
+                <div class=" form-group">
+                  <label> Fecha Final </label>
+                  <input class="form-control " type="date" />
+                </div>
+              </div>
+            </div>
             
             <div class=" row">
               <div class=" col-md-10 pr-md-1">
                 <div class=" table-responsive">
-                  <table class=" table  " id="">
+                  <table class="table" id="">
                     <thead class=" text-primary">
                       <tr>
-                        <th>Nombre</th>
-                        <th>Peso</th>
-                        <th>Aplica</th>
+                        <th class="td-description">Nombre</th>
+                        <th class="td-weight">Peso</th>
                       </tr>
                     </thead>
-                    <tbody>
-                      <tr *ngFor="let stage of stagesList">...
+                    <tbody *ngFor="let stage of stagesList; index as i">
+                      <tr>
                         <td class="td-description">{{stage.nombre}}</td>
-                        <td class="td-weight"> 
-                            <div class=" form-group">
-                              <input
-                                class=" form-control weight-input"
-                                placeholder="Peso"
-                                type="number"
-                                #weight
-                              />
-                            </div>
-                        </td>
-                        <td class="td-apply">
-                          <input 
-                            class="apply-input" 
-                            type="checkbox"
-                            (click)="addStage(stage.id, weight.value)"
-                          />
-                        </td>
+                        <td class="td-weight"><p><i class="tim-icons icon-single-copy-04" (click)="showDeliverables(i)"></i></p></td>
+                      </tr>
+                      <tr *ngIf="i == iterador" class="tr-background">
+                        <div class=" table-responsive">
+                          <table class="table">
+                            <tbody>
+                              <tr *ngFor="let deliverable of deliverablesList">
+                                <td class="td-description">{{deliverable.nombre}}</td>
+                                <td class="td-apply">
+                                  <input 
+                                    class="apply-input" 
+                                    type="checkbox"
+                                    (click)="addStage(deliverable.id, i)"
+                                  />
+                                </td>        
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
                       </tr>
                     </tbody>
                   </table>

@@ -5,6 +5,7 @@ import { TeamsService } from 'src/app/services/teams/teams.service';
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { CityService } from 'src/app/services/cities/city.service';
 import { SaveService } from 'src/app/services/saveproyect/save.service';
+import { DeliverableService } from 'src/app/services/deliverables/deliverable.service';
 
 @Component({
   selector: 'app-edit-project',
@@ -17,15 +18,18 @@ export class EditProjectComponent implements OnInit {
   public clientList : any;
   public stagesList : any;
   public teamList : any;
+  public deliverablesList : any;
   public projectForm: FormGroup;
   public stages: FormArray;
-  
+  public show : boolean = false;
+  public iterador : number;
   constructor(
     private clientsService : ClientsService, 
     private stageService : StageService,
     private teamsService : TeamsService,
     private cityServie : CityService,
-    private saveService : SaveService
+    private saveService : SaveService,
+    private deliverablesService : DeliverableService
   ) {
     this.stages = new FormArray([]);
     this.projectForm = new FormGroup({
@@ -44,6 +48,7 @@ export class EditProjectComponent implements OnInit {
     this.getAllCities();
     this.getAllStages();
     this.getAllTeams();
+    this.getAllDeliverables();
   }
 
   createProject() {
@@ -78,6 +83,7 @@ export class EditProjectComponent implements OnInit {
   }
 
   addStage(stageId:number, weight:number) {
+    debugger;
     const stage = new FormGroup({
       stageId: new FormControl(stageId),
       weight: new FormControl(weight)
@@ -151,6 +157,31 @@ export class EditProjectComponent implements OnInit {
         console.log('Error al cargar lista de equipos');
       }
     );
+  }
+
+  getAllDeliverables(){
+    let DeliverablesDefault = {
+      id: 0
+    }
+    this.teamList = new Array();
+    this.teamList.push(DeliverablesDefault);
+    this.deliverablesService.getAllDeliverables().subscribe(
+      response => {
+        let resJson : any = response.json();
+        this.deliverablesList = resJson.deliverableList;
+      },
+      error => {
+        console.log('Error al cargar lista de entregables');
+      }
+    );
+  }
+
+  showDeliverables(i : any){
+    if(i == this.iterador){
+      this.iterador = -1;
+    }else{
+      this.iterador = i;
+    }
   }
 
 }
