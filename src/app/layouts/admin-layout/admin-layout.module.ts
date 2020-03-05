@@ -26,6 +26,9 @@ import { CityService } from 'src/app/services/cities/city.service';
 import { SaveService } from 'src/app/services/saveproyect/save.service';
 import { BusinessCardComponent } from 'src/app/pages/components/business-card/business-card.component';
 import { DeliverableService } from 'src/app/services/deliverables/deliverable.service';
+import { StagesComponent } from 'src/app/pages/stages/stages.component';
+import { ClientesComponent } from 'src/app/pages/clientes/clientes.component';
+import { DeliverablesComponent } from 'src/app/pages/deliverables/deliverables.component';
 
 @NgModule({
   imports: [
@@ -46,7 +49,10 @@ import { DeliverableService } from 'src/app/services/deliverables/deliverable.se
     NotificationsComponent,
     MapComponent,
     EditProjectComponent,
-    BusinessCardComponent
+    BusinessCardComponent,
+    StagesComponent,
+    ClientesComponent, 
+    DeliverablesComponent
     // RtlComponent
   ],
   providers: [

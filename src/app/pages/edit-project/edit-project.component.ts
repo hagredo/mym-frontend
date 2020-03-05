@@ -18,21 +18,21 @@ export class EditProjectComponent implements OnInit {
   public clientList : any;
   public stagesList : any;
   public teamList : any;
-  public deliverablesList : Array<any>;
   public projectForm: FormGroup;
   public stages: FormArray;
   public show : boolean = false;
   public iterador : number;
   public chekedMap : Map<number, boolean>;
+  public stagesListSelected : Array<any>;
+
   constructor(
     private clientsService : ClientsService, 
     private stageService : StageService,
     private teamsService : TeamsService,
     private cityServie : CityService,
-    private saveService : SaveService,
-    private deliverablesService : DeliverableService
+    private saveService : SaveService
   ) {
-    this.deliverablesList = new Array<any>();
+    this.stagesListSelected = new Array<any>();
     this.chekedMap = new Map<number, boolean>();
     this.stages = new FormArray([]);
     this.projectForm = new FormGroup({
@@ -42,7 +42,8 @@ export class EditProjectComponent implements OnInit {
       team: new FormControl('', Validators.required),
       status: new FormControl('', Validators.required),
       value: new FormControl('', Validators.required),
-      stages: this.stages
+      stages: this.stages,
+      stageSelected: new FormControl('', Validators.required)
     });
   }
 
@@ -51,7 +52,6 @@ export class EditProjectComponent implements OnInit {
     this.getAllCities();
     this.getAllStages();
     this.getAllTeams();
-    this.getAllDeliverables();
   }
 
   createProject() {
@@ -85,13 +85,15 @@ export class EditProjectComponent implements OnInit {
     return body;
   }
 
-  addStage(deliverableId:number, stage:number) {
-    /*const stage = new FormGroup({
-      stageId: new FormControl(stageId),
-      weight: new FormControl(weight)
+  addStage() {
+    let stageSelected;
+    this.stagesList.forEach(stage => {
+      if (stage.id == this.projectForm.get('stageSelected').value)
+      stageSelected = stage;
     });
-    this.stages.push(stage);*/
-    
+    if(!this.stagesListSelected.includes(stageSelected) && stageSelected) {
+      this.stagesListSelected.push(stageSelected);
+    }
   }
 
   getAllClients(){
@@ -162,32 +164,7 @@ export class EditProjectComponent implements OnInit {
     );
   }
 
-  getAllDeliverables(){
-    let DeliverablesDefault = {
-      id: 0
-    }
-    this.teamList = new Array();
-    this.teamList.push(DeliverablesDefault);
-    this.deliverablesService.getAllDeliverables().subscribe(
-      response => {
-        let resJson : any = response.json();
-        resJson.deliverableList.forEach(deliverable =>{
-          let objectDeliverable = {
-            id : deliverable.id,
-            nombre : deliverable.nombre,
-            checked : 'false'
-          };
-          this.deliverablesList.push(objectDeliverable);
-        });
-      },
-      error => {
-        console.log('Error al cargar lista de entregables');
-      }
-    );
-  }
-
   showDeliverables(i : any){
-    console.log(JSON.stringify(this.deliverablesList));
     if(i == this.iterador){
       this.iterador = -1;
     }else{
