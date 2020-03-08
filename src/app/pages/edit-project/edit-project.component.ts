@@ -7,6 +7,8 @@ import { CityService } from 'src/app/services/cities/city.service';
 import { SaveService } from 'src/app/services/saveproyect/save.service';
 import { DeliverableService } from 'src/app/services/deliverables/deliverable.service';
 import { PaymentMethodService } from 'src/app/services/paymentmethod/payment-method.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbdModalContentComponent } from 'src/app/components/ngbd-modal-content/ngbd-modal-content.component';
 
 @Component({
   selector: 'app-edit-project',
@@ -35,7 +37,8 @@ export class EditProjectComponent implements OnInit {
     private teamsService : TeamsService,
     private cityServie : CityService,
     private saveService : SaveService,
-    private paymentMethodService : PaymentMethodService
+    private paymentMethodService : PaymentMethodService,
+    private modalService: NgbModal
   ) {
     this.stagesListSelected = new Array<any>();
     this.stagesListToSend = new Array<any>();
@@ -68,10 +71,17 @@ export class EditProjectComponent implements OnInit {
     this.getAllPaymentMethods();
   }
 
-  createProject() {
+  saveProject() {
     let body = this.buildProjectBody();
-    console.log(JSON.stringify(body));
-    this.saveService.saveProject(body).subscribe();
+    this.saveService.saveProject(body).subscribe(
+      response => {
+        this.openModal(response.json().responseMessage);
+        this.cleanForm();
+      },
+      error => {
+        this.openModal('Error: ' + error.responseMessage);
+      }
+    );
   }
 
   buildProjectBody():any {
@@ -116,6 +126,34 @@ export class EditProjectComponent implements OnInit {
     return deliverableStageList;
   }
 
+  openModal(content:string) {
+    const modalRef = this.modalService.open(NgbdModalContentComponent);
+    modalRef.componentInstance.title = 'Guardar proyecto';
+    modalRef.componentInstance.content = content;
+  }
+
+  cleanForm() {
+    this.projectForm.get('client').setValue(0);
+    this.projectForm.get('contractNumber').setValue('');
+    this.projectForm.get('projectName').setValue('');
+    this.projectForm.get('city').setValue(0);
+    this.projectForm.get('team').setValue(0);
+    this.projectForm.get('status').setValue(0);
+    this.projectForm.get('value').setValue('');
+    this.projectForm.get('paymentMethod').setValue(0);
+    this.projectForm.get('initExecution').setValue('');
+    this.projectForm.get('endExecution').setValue('');
+    this.projectForm.get('initExtension').setValue('');
+    this.projectForm.get('endExtension').setValue('');
+    this.projectForm.get('initSuspension').setValue('');
+    this.projectForm.get('endSuspension').setValue('');
+    this.projectForm.get('stageSelected').setValue(0);
+    this.stagesListSelected = new Array<any>();
+    this.stagesListToSend = new Array<any>();
+    this.stagesIdList = new Array<number>();
+    this.deliverablesMap = new Map<number, Array<number>>();
+  } 
+  
   changeInitDate(init:string, end:string) {
     this.projectForm.get(init).setValue(this.projectForm.get(end).value);
   }
@@ -129,6 +167,16 @@ export class EditProjectComponent implements OnInit {
     if(!this.stagesListSelected.includes(stageSelected) && stageSelected) {
       this.stagesListSelected.push(stageSelected);
     }
+  }
+
+  removeStage(stagId:number) {
+    for (let index = 0; index < this.stagesListSelected.length; index++) {
+      const stage = this.stagesListSelected[index];
+      if (stage.id == stagId) {
+        this.stagesListSelected.splice(index, 1);
+      }
+    }
+    this.deliverablesMap.delete(stagId);
   }
 
   onWeigthChange(stageId:number, weigth:number) {

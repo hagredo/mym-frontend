@@ -23,10 +23,17 @@ export const ROUTES: RouteInfo[] = [
     class: ""
   },
   {
-    path: "/app-clientes",
+    path: "/clients",
     title: "Clientes",
     rtlTitle: "الرموز",
     icon: "icon-satisfied",
+    class: ""
+  },
+  {
+    path: "/stages",
+    title: "Etapas",
+    rtlTitle: "قائمة الجدول",
+    icon: "icon-puzzle-10",
     class: ""
   },
   {
@@ -48,13 +55,6 @@ export const ROUTES: RouteInfo[] = [
     title: "Informes",
     rtlTitle: "ملف تعريفي للمستخدم",
     icon: "icon-paper",
-    class: ""
-  },
-  {
-    path: "/tables",
-    title: "Etapas",
-    rtlTitle: "قائمة الجدول",
-    icon: "icon-puzzle-10",
     class: ""
   },
   {

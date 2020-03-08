@@ -55,6 +55,15 @@ export class DeliverablesComponent implements OnInit {
     } 
   }
 
+  removeDeliverable(deliverableId:number) {
+    for (let index = 0; index < this.deliverablesListSelected.length; index++) {
+      const deliverable = this.deliverablesListSelected[index];
+      if (deliverable.id == deliverableId) {
+        this.deliverablesListSelected.splice(index, 1);
+      }
+    }
+  }
+
   getAllDeliverables(){
     let deliverableDefault = {
       id: 0

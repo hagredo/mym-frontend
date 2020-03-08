@@ -1,12 +1,12 @@
 <div class=" content">
   <div class=" row">
-    <div class=" col-md-8">
+    <div class=" col-md-12">
       <div class=" card">
         <div class=" card-header"><h4 class=" title">Agregar proyecto</h4></div>
         <div class=" card-body">
           <form [formGroup]="projectForm">
             <div class=" row">
-              <div class=" col-md-4 pr-md-1">
+              <div class=" col-md-5 pr-md-1">
                 <div class=" form-group">
                   <label> ENTIDAD CONTRATANTE </label>
                   <select class=" form-control font-color" formControlName="client">
@@ -21,18 +21,7 @@
                   </select>
                 </div>
               </div>
-              <div class=" col-md-4 pr-md-1">
-                <div class=" form-group">
-                  <label> CONTRATO N° </label>
-                  <input
-                    class=" form-control"
-                    placeholder="Numero de contrato"
-                    type="text"
-                    formControlName="contractNumber"
-                  />
-                </div>
-              </div>
-              <div class=" col-md-4 pr-md-1">
+              <div class=" col-md-6 pr-md-1">
                 <div class=" form-group">
                   <label> NOMBRE DE CONTRATO </label>
                   <input
@@ -45,6 +34,17 @@
               </div>
             </div>
             <div class=" row">
+              <div class=" col-md-4 pr-md-1">
+                <div class=" form-group">
+                  <label> CONTRATO N° </label>
+                  <input
+                    class=" form-control"
+                    placeholder="Numero de contrato"
+                    type="text"
+                    formControlName="contractNumber"
+                  />
+                </div>
+              </div>
               <div class=" col-md-4 pr-md-1">
                 <div class=" form-group">
                   <label> CIUDAD </label>
@@ -60,7 +60,7 @@
                   </select>
                 </div>
               </div>
-              <div class=" col-md-4 pr-md-1">
+              <div class=" col-md-3 pr-md-1">
                 <div class=" form-group">
                   <label> EQUIPO </label>
                   <select class=" form-control font-color" formControlName="team">
@@ -75,7 +75,9 @@
                   </select>
                 </div>
               </div>
-              <div class=" col-md-4 pr-md-1">
+            </div>
+            <div class="row">
+              <div class=" col-md-3 pr-md-1">
                 <div class=" form-group">
                   <label> ESTADO </label>
                   <select class=" form-control font-color" formControlName="status">
@@ -86,9 +88,7 @@
                   </select>
                 </div>
               </div>
-            </div>
-            <div class="row">
-              <div class=" col-md-5 pr-md-1">
+              <div class=" col-md-4 pr-md-1">
                 <div class=" form-group">
                   <label > VALOR CONTRATO </label>
                   <input
@@ -99,7 +99,7 @@
                   />
                 </div>
               </div>
-              <div class=" col-md-5 pr-md-1">
+              <div class=" col-md-4 pr-md-1">
                 <div class=" form-group">
                   <label> FORMAS DE PAGO </label>
                   <select class=" form-control font-color" formControlName="paymentMethod">
@@ -116,12 +116,8 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-md-6 pr-md-1">
-                <h5 class=" title">PLAZO DE EJECUCION INICIAL</h5>
-              </div>
-            </div>
-            <div class=" row">
               <div class="col-md-3 pr-md-1">
+                <h5 class=" title">PLAZO DE EJECUCION INICIAL</h5>
                 <div class=" form-group">
                   <label> Fecha Inicial </label>
                   <input 
@@ -130,8 +126,6 @@
                     formControlName="initExecution" 
                   />
                 </div>
-              </div>
-              <div class="col-md-3 pr-md-1">
                 <div class=" form-group">
                   <label> Fecha Final </label>
                   <input 
@@ -142,14 +136,8 @@
                   />
                 </div>
               </div>
-            </div>
-            <div class="row">
-              <div class="col-md-6 pr-md-1">
+              <div class="col-md-3 offset-md-1 pr-md-1">
                 <h5 class=" title">PRORROGA O ADICION EN TIEMPO</h5>
-              </div>
-            </div>
-            <div class=" row">
-              <div class="col-md-3 pr-md-1">
                 <div class=" form-group">
                   <label> Fecha Inicial </label>
                   <input 
@@ -158,8 +146,6 @@
                     formControlName="initExtension"
                   />
                 </div>
-              </div>
-              <div class="col-md-3 pr-md-1">
                 <div class=" form-group">
                   <label> Fecha Final </label>
                   <input 
@@ -170,14 +156,8 @@
                   />
                 </div>
               </div>
-            </div>
-            <div class="row">
-              <div class="col-md-6 pr-md-1">
+              <div class="col-md-3 offset-md-1 pr-md-1">
                 <h5 class=" title">PLAZO DE SUSPENSION</h5>
-              </div>
-            </div>
-            <div class=" row">
-              <div class="col-md-3 pr-md-1">
                 <div class=" form-group">
                   <label> Fecha Inicial </label>
                   <input 
@@ -186,8 +166,6 @@
                     formControlName="initSuspension"
                   />
                 </div>
-              </div>
-              <div class="col-md-3 pr-md-1">
                 <div class=" form-group">
                   <label> Fecha Final </label>
                   <input 
@@ -199,7 +177,7 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-md-6 pr-md-1">
+              <div class="col-md-7 pr-md-1">
                 <h5 class=" title">ETAPAS</h5>
               </div>
             </div>
@@ -218,13 +196,13 @@
                   </select>
                 </div>
               </div>
-              <div class="col-md-2 col-md-offset-3">
-                <div class="tim-icons icon-pin" (click)="addStage()"></div>
+              <div class="col-md-1 pr-md-1">
+                <button type="button" class="btn btn-primary btn-sm" (click)="addStage()">+</button>
               </div>
             </div>
 
             <div class=" row" *ngIf="stagesListSelected.length > 0">
-              <div class=" col-md-10 pr-md-1">
+              <div class=" col-md-11 pr-md-1">
                 <div class=" table-responsive">
                   <table class="table" id="">
                     <thead class=" text-primary">
@@ -240,7 +218,14 @@
                         <td class="td-description">
                           <input class=" form-control" type="number" (change)="onWeigthChange(stage.id, weigth.value)" #weigth>
                         </td>
-                        <td class="td-weight"><p><i class="tim-icons icon-single-copy-04" (click)="showDeliverables(i)"></i></p></td>
+                        <td class="td-weight">
+                          <p>
+                            &nbsp;&nbsp;
+                            <i class="tim-icons icon-single-copy-04 cursor" (click)="showDeliverables(i)"></i>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <i class="tim-icons icon-simple-remove cursor" (click)="removeStage(stage.id)"></i>
+                          </p>
+                        </td>
                       </tr>
                       <tr *ngIf="i == iterador" class="tr-background">
                         <app-deliverables 
@@ -248,6 +233,7 @@
                           (deliverableSelection)="processDeliverableSelection($event, stage.id)">
                         </app-deliverables>
                       </tr>
+                      <br>
                     </tbody>
                   </table>
                 </div>
@@ -257,12 +243,15 @@
           </form>
         </div>
         <div class=" card-footer">
-          <button class=" btn btn-fill btn-danger" (click)="createProject()">Crear</button>
+          <button 
+            class=" btn btn-fill btn-primary" 
+            (click)="saveProject()" 
+            [disabled]="!projectForm.valid"
+          >
+            Guardar
+          </button>
         </div>
       </div>
-    </div>
-    <div class=" col-md-4">
-      <app-business-card></app-business-card>
     </div>
   </div>
 </div>

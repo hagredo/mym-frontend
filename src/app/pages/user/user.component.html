@@ -44,7 +44,13 @@
           </form>
         </div>
         <div class=" card-footer">
-          <button class=" btn btn-fill btn-danger" (click)="validateUser()" [disabled]="userForm.pristine">Ingresar</button>
+          <button 
+            class=" btn btn-fill btn-danger" 
+            (click)="validateUser()" 
+            [disabled]="!userForm.valid"
+          >
+            Ingresar
+          </button>
         </div>
       </div>
     </div>

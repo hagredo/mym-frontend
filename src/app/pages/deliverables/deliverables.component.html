@@ -14,17 +14,19 @@
         </select>
       </div>
     </div>
-    <div class="col-md-2 col-md-offset-3">
-      <div class="tim-icons icon-pin" (click)="addDeliverable(); onDeliverableSelection();"></div>
+    <div class="col-md-1 pr-md-1">
+      <button type="button" class="btn btn-primary btn-sm" (click)="addDeliverable(); onDeliverableSelection();">+</button>
     </div>
   </div>
-  <div class=" table-responsive" *ngIf="deliverablesListSelected.length > 0">
-    <table class="table">
-      <tbody>
-        <tr *ngFor="let deliverable of deliverablesListSelected">
-          <td class="td-description">{{deliverable.nombre}}</td>        
-        </tr>
-      </tbody>
-    </table>
+  <br>
+  <div *ngIf="deliverablesListSelected.length > 0">
+    <ul class="list-group">
+      <li class="list-group-item deliv-background" *ngFor="let deliverable of deliverablesListSelected">
+        <div class="row">
+          <div class="col-md-11">{{deliverable.nombre}}</div>
+          <div class="col-md-1 cursor" (click)="removeDeliverable(deliverable.id)"><i class=" tim-icons icon-simple-remove"></i></div>
+        </div>
+      </li>
+    </ul>
   </div>
 </form>
