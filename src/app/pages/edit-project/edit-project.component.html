@@ -6,9 +6,9 @@
         <div class=" card-body">
           <form [formGroup]="projectForm">
             <div class=" row">
-              <div class=" col-md-6 pr-md-1">
+              <div class=" col-md-4 pr-md-1">
                 <div class=" form-group">
-                  <label> Cliente </label>
+                  <label> ENTIDAD CONTRATANTE </label>
                   <select class=" form-control font-color" formControlName="client">
                     <option value="0" selected>Seleccione...</option>
                     <option 
@@ -21,9 +21,20 @@
                   </select>
                 </div>
               </div>
-              <div class=" col-md-6 pr-md-1">
+              <div class=" col-md-4 pr-md-1">
                 <div class=" form-group">
-                  <label> Nombre Proyecto </label>
+                  <label> CONTRATO N° </label>
+                  <input
+                    class=" form-control"
+                    placeholder="Numero de contrato"
+                    type="text"
+                    formControlName="contractNumber"
+                  />
+                </div>
+              </div>
+              <div class=" col-md-4 pr-md-1">
+                <div class=" form-group">
+                  <label> NOMBRE DE CONTRATO </label>
                   <input
                     class=" form-control"
                     placeholder="Nombre proyecto"
@@ -34,9 +45,9 @@
               </div>
             </div>
             <div class=" row">
-              <div class=" col-md-3 pr-md-1">
+              <div class=" col-md-4 pr-md-1">
                 <div class=" form-group">
-                  <label> Ciudad </label>
+                  <label> CIUDAD </label>
                   <select class=" form-control font-color" formControlName="city">
                     <option value="0" selected>Seleccione...</option>
                     <option 
@@ -49,9 +60,9 @@
                   </select>
                 </div>
               </div>
-              <div class=" col-md-3 pr-md-1">
+              <div class=" col-md-4 pr-md-1">
                 <div class=" form-group">
-                  <label> Equipo </label>
+                  <label> EQUIPO </label>
                   <select class=" form-control font-color" formControlName="team">
                     <option value="0" selected>Seleccione...</option>
                     <option 
@@ -64,9 +75,9 @@
                   </select>
                 </div>
               </div>
-              <div class=" col-md-3 pr-md-1">
+              <div class=" col-md-4 pr-md-1">
                 <div class=" form-group">
-                  <label> Estado </label>
+                  <label> ESTADO </label>
                   <select class=" form-control font-color" formControlName="status">
                     <option value="0" [selected]="0 === 0">Seleccione...</option>
                     <option value="C">Creado</option>
@@ -75,15 +86,32 @@
                   </select>
                 </div>
               </div>
-              <div class=" col-md-3 pr-md-1">
+            </div>
+            <div class="row">
+              <div class=" col-md-5 pr-md-1">
                 <div class=" form-group">
-                  <label > Valor contrato </label>
+                  <label > VALOR CONTRATO </label>
                   <input
                     class=" form-control"
                     placeholder="Valor proyecto"
                     type="number"
                     formControlName="value"
                   />
+                </div>
+              </div>
+              <div class=" col-md-5 pr-md-1">
+                <div class=" form-group">
+                  <label> FORMAS DE PAGO </label>
+                  <select class=" form-control font-color" formControlName="paymentMethod">
+                    <option value="0" selected>Seleccione...</option>
+                    <option 
+                      *ngFor="let paymentMethod of paymentMethodList" 
+                      [selected]="paymentMethod.id === 0"
+                      [value]="paymentMethod.id"
+                    >
+                      {{paymentMethod.descripcion}}
+                    </option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -96,13 +124,22 @@
               <div class="col-md-3 pr-md-1">
                 <div class=" form-group">
                   <label> Fecha Inicial </label>
-                  <input class="form-control" type="date" />
+                  <input 
+                    class="form-control" 
+                    type="date"
+                    formControlName="initExecution" 
+                  />
                 </div>
               </div>
               <div class="col-md-3 pr-md-1">
                 <div class=" form-group">
                   <label> Fecha Final </label>
-                  <input class="form-control " type="date" />
+                  <input 
+                    class="form-control " 
+                    type="date" 
+                    formControlName="endExecution" 
+                    (change)="changeInitDate('initExtension', 'endExecution')"
+                  />
                 </div>
               </div>
             </div>
@@ -115,13 +152,22 @@
               <div class="col-md-3 pr-md-1">
                 <div class=" form-group">
                   <label> Fecha Inicial </label>
-                  <input class="form-control" type="date" />
+                  <input 
+                    class="form-control" 
+                    type="date" 
+                    formControlName="initExtension"
+                  />
                 </div>
               </div>
               <div class="col-md-3 pr-md-1">
                 <div class=" form-group">
                   <label> Fecha Final </label>
-                  <input class="form-control " type="date" />
+                  <input 
+                    class="form-control " 
+                    type="date" 
+                    formControlName="endExtension" 
+                    (change)="changeInitDate('initSuspension', 'endExtension')"
+                  />
                 </div>
               </div>
             </div>
@@ -134,13 +180,21 @@
               <div class="col-md-3 pr-md-1">
                 <div class=" form-group">
                   <label> Fecha Inicial </label>
-                  <input class="form-control" type="date" />
+                  <input 
+                    class="form-control"
+                    type="date" 
+                    formControlName="initSuspension"
+                  />
                 </div>
               </div>
               <div class="col-md-3 pr-md-1">
                 <div class=" form-group">
                   <label> Fecha Final </label>
-                  <input class="form-control " type="date" />
+                  <input 
+                    class="form-control " 
+                    type="date" 
+                    formControlName="endSuspension" 
+                  />
                 </div>
               </div>
             </div>
@@ -176,16 +230,23 @@
                     <thead class=" text-primary">
                       <tr>
                         <th class="td-description">Nombre</th>
-                        <th class="td-weight">Editar</th>
+                        <th class="td-weight">Peso %</th>
+                        <th class="td-deliverables">Entregables</th>
                       </tr>
                     </thead>
                     <tbody *ngFor="let stage of stagesListSelected; index as i">
                       <tr>
                         <td class="td-description">{{stage.nombre}}</td>
+                        <td class="td-description">
+                          <input class=" form-control" type="number" (change)="onWeigthChange(stage.id, weigth.value)" #weigth>
+                        </td>
                         <td class="td-weight"><p><i class="tim-icons icon-single-copy-04" (click)="showDeliverables(i)"></i></p></td>
                       </tr>
                       <tr *ngIf="i == iterador" class="tr-background">
-                        <app-deliverables stageId="stage.id"></app-deliverables>
+                        <app-deliverables 
+                          [deliverableIds]="getDeliverablesByStage(stage.id)" 
+                          (deliverableSelection)="processDeliverableSelection($event, stage.id)">
+                        </app-deliverables>
                       </tr>
                     </tbody>
                   </table>

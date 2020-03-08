@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { DeliverableService } from 'src/app/services/deliverables/deliverable.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
@@ -9,13 +9,20 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 })
 export class DeliverablesComponent implements OnInit {
 
-  @Input() stageId: number;
+  @Input() 
+  deliverableIds: Array<number>;
+
+  @Output()
+  deliverableSelection = new EventEmitter<number>();
   
   public deliverableForm: FormGroup;
   public deliverablesList : Array<any>;
   public deliverablesListSelected : Array<any>;
 
   constructor(private deliverablesService : DeliverableService) {
+    if (!this.deliverableIds) {
+      this.deliverableIds = new Array<number>(); 
+    }
     this.deliverablesListSelected = new Array<any>();
     this.deliverableForm = new FormGroup({
       deliverableSelected : new FormControl('', Validators.required)
@@ -24,16 +31,27 @@ export class DeliverablesComponent implements OnInit {
 
   ngOnInit() {
     this.getAllDeliverables();
+    if (this.deliverableIds)
+      setTimeout(() => {
+        this.deliverableIds.forEach(deliverableId => {
+          this.addDeliverable(deliverableId);
+        });
+      }, 100);
   }
 
-  addDeliverable() {
-    let stageSelected;
-    this.deliverablesList.forEach(stage => {
-      if (stage.id == this.deliverableForm.get('deliverableSelected').value)
-        stageSelected = stage;
+  onDeliverableSelection() {
+    this.deliverableSelection.emit(this.deliverableForm.get('deliverableSelected').value);
+  }
+
+  addDeliverable(deliverableId? : number) {
+    let deliverableSelected;
+    this.deliverablesList.forEach(deliverable => {
+      if (deliverable.id == ((deliverableId) ? deliverableId : this.deliverableForm.get('deliverableSelected').value)) {
+        deliverableSelected = deliverable;
+      }
     });
-    if(!this.deliverablesListSelected.includes(stageSelected) && stageSelected) {
-      this.deliverablesListSelected.push(stageSelected);
+    if(!this.deliverablesListSelected.includes(deliverableSelected) && deliverableSelected) {
+      this.deliverablesListSelected.push(deliverableSelected);
     } 
   }
 

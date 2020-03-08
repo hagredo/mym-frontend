@@ -29,6 +29,7 @@ import { DeliverableService } from 'src/app/services/deliverables/deliverable.se
 import { StagesComponent } from 'src/app/pages/stages/stages.component';
 import { ClientesComponent } from 'src/app/pages/clientes/clientes.component';
 import { DeliverablesComponent } from 'src/app/pages/deliverables/deliverables.component';
+import { PaymentMethodService } from 'src/app/services/paymentmethod/payment-method.service';
 
 @NgModule({
   imports: [
@@ -63,7 +64,8 @@ import { DeliverablesComponent } from 'src/app/pages/deliverables/deliverables.c
     TeamsService,
     CityService,
     SaveService,
-    DeliverableService
+    DeliverableService,
+    PaymentMethodService
   ]
 })
 export class AdminLayoutModule {}

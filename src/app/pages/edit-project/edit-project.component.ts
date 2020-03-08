@@ -6,6 +6,7 @@ import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { CityService } from 'src/app/services/cities/city.service';
 import { SaveService } from 'src/app/services/saveproyect/save.service';
 import { DeliverableService } from 'src/app/services/deliverables/deliverable.service';
+import { PaymentMethodService } from 'src/app/services/paymentmethod/payment-method.service';
 
 @Component({
   selector: 'app-edit-project',
@@ -18,31 +19,43 @@ export class EditProjectComponent implements OnInit {
   public clientList : any;
   public stagesList : any;
   public teamList : any;
+  public paymentMethodList: any;
+
   public projectForm: FormGroup;
-  public stages: FormArray;
   public show : boolean = false;
   public iterador : number;
-  public chekedMap : Map<number, boolean>;
   public stagesListSelected : Array<any>;
+  public stagesListToSend : Array<any>;
+  public stagesIdList : Array<number>;
+  public deliverablesMap : Map<number, Array<number>>;
 
   constructor(
     private clientsService : ClientsService, 
     private stageService : StageService,
     private teamsService : TeamsService,
     private cityServie : CityService,
-    private saveService : SaveService
+    private saveService : SaveService,
+    private paymentMethodService : PaymentMethodService
   ) {
     this.stagesListSelected = new Array<any>();
-    this.chekedMap = new Map<number, boolean>();
-    this.stages = new FormArray([]);
+    this.stagesListToSend = new Array<any>();
+    this.stagesIdList = new Array<number>();
+    this.deliverablesMap = new Map<number, Array<number>>();
     this.projectForm = new FormGroup({
       city: new FormControl('', Validators.required),
       client: new FormControl('', Validators.required),
+      contractNumber: new FormControl('', Validators.required),
       projectName: new FormControl('', Validators.required),
       team: new FormControl('', Validators.required),
       status: new FormControl('', Validators.required),
       value: new FormControl('', Validators.required),
-      stages: this.stages,
+      paymentMethod: new FormControl('', Validators.required),
+      initExecution: new FormControl('', Validators.required),
+      endExecution: new FormControl('', Validators.required),
+      initExtension: new FormControl({value: '', disabled: true}, Validators.required),
+      endExtension: new FormControl('', Validators.required),
+      initSuspension: new FormControl({value: '', disabled: true}, Validators.required),
+      endSuspension: new FormControl('', Validators.required),
       stageSelected: new FormControl('', Validators.required)
     });
   }
@@ -52,37 +65,59 @@ export class EditProjectComponent implements OnInit {
     this.getAllCities();
     this.getAllStages();
     this.getAllTeams();
+    this.getAllPaymentMethods();
   }
 
   createProject() {
     let body = this.buildProjectBody();
+    console.log(JSON.stringify(body));
     this.saveService.saveProject(body).subscribe();
   }
 
   buildProjectBody():any {
-    let stages = new Array();
-    this.projectForm.get('stages').value.forEach(stage => {
-      let stageProject = {
-            idEtapa: stage.stageId,
-            peso: stage.weight
-          }
-      stages.push(stageProject);
-    });
     let body = {
       project: {
+        numeroContrato: this.projectForm.get('contractNumber').value,
+        nombre: this.projectForm.get('projectName').value,
         estado: this.projectForm.get('status').value,
-        idCiudad: this.projectForm.get('city').value,
         idCliente: this.projectForm.get('client').value,
+        idCiudad: this.projectForm.get('city').value,
         idEquipo: this.projectForm.get('team').value,
-        nombre: this.projectForm.get('projectName').value
+        idFormaPago: this.projectForm.get('paymentMethod').value,
+        inicioEjecucion: this.projectForm.get('initExecution').value,
+        finEjecucion: this.projectForm.get('endExecution').value,
+        inicioProrroga: this.projectForm.get('initExtension').value,
+        finProrroga: this.projectForm.get('endExtension').value,
+        inicioSuspension: this.projectForm.get('initSuspension').value,
+        finSuspension: this.projectForm.get('endSuspension').value,
+        status: 'A',
       },
       value: {
         idProyecto: 0,
         total: this.projectForm.get('value').value
       },
-      stagesProject : stages
+      stageProjectList : this.stagesListToSend,
+      deliverableStageList : this.buildDeliverableStageList()
     }
     return body;
+  }
+
+  buildDeliverableStageList(): Array<any> {
+    let deliverableStageList = new Array<any>();
+    this.deliverablesMap.forEach((deliverableArray: Array<any>, stageId: number) => {
+      deliverableArray.forEach(deliverable => {
+        let deliverableObject = {
+          idEtapa: stageId,
+          idEntregable: deliverable
+        }
+        deliverableStageList.push(deliverableObject);
+      });
+    });
+    return deliverableStageList;
+  }
+
+  changeInitDate(init:string, end:string) {
+    this.projectForm.get(init).setValue(this.projectForm.get(end).value);
   }
 
   addStage() {
@@ -94,6 +129,50 @@ export class EditProjectComponent implements OnInit {
     if(!this.stagesListSelected.includes(stageSelected) && stageSelected) {
       this.stagesListSelected.push(stageSelected);
     }
+  }
+
+  onWeigthChange(stageId:number, weigth:number) {
+    this.stagesListToSend
+    let stageProject = {
+      idEtapa: stageId,
+      peso: weigth
+    }
+    if(!this.stagesIdList.includes(stageId)) {
+      this.stagesIdList.push(stageId);
+      this.stagesListToSend.push(stageProject);
+    } else {
+      for (let index = 0; index < this.stagesListToSend.length; index++) {
+        const stage = this.stagesListToSend[index];
+        if (stage.idEtapa == stageId) {
+          this.stagesListToSend[index] = stageProject;
+        }
+      }
+    }
+  }
+
+  showDeliverables(i : any){
+    if(i == this.iterador){
+      this.iterador = -1;
+    }else{
+      this.iterador = i;
+    }
+  }
+
+  getDeliverablesByStage(stageId : number): Array<number> {
+    return this.deliverablesMap.get(stageId);
+  }
+
+  processDeliverableSelection(deliberableId : number, stageId : number) {
+    let deliverableArray = this.deliverablesMap.get(stageId);
+    if (deliverableArray) {
+      if (!deliverableArray.includes(deliberableId) && deliberableId) {
+        deliverableArray.push(deliberableId);
+      }
+    } else if(deliberableId) {
+      deliverableArray = new Array<number>();
+      deliverableArray.push(deliberableId);
+    }
+    this.deliverablesMap.set(stageId, deliverableArray);
   }
 
   getAllClients(){
@@ -164,12 +243,21 @@ export class EditProjectComponent implements OnInit {
     );
   }
 
-  showDeliverables(i : any){
-    if(i == this.iterador){
-      this.iterador = -1;
-    }else{
-      this.iterador = i;
+  getAllPaymentMethods(){
+    let paymentMethodDefault = {
+      id: 0
     }
+    this.paymentMethodList = new Array();
+    this.paymentMethodList.push(paymentMethodDefault);
+    this.paymentMethodService.getAllPaymentMethods().subscribe(
+      response => {
+        let resJson : any = response.json();
+        this.paymentMethodList = resJson.paymentMethodList;;
+      },
+      error => {
+        console.log('Error al cargar lista de formas de pago');
+      }
+    );
   }
 
 }
