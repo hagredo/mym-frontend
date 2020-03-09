@@ -1,12 +1,14 @@
 import { Component, OnInit } from "@angular/core";
 import Chart from 'chart.js';
 import { Router } from '@angular/router';
+import { ProjectService } from 'src/app/services/projects/project.service';
 
 @Component({
   selector: "app-dashboard",
   templateUrl: "dashboard.component.html"
 })
 export class DashboardComponent implements OnInit {
+  public projectsList : any;
   public canvas : any;
   public ctx;
   public datasets: any;
@@ -17,13 +19,15 @@ export class DashboardComponent implements OnInit {
   public clicked2: boolean = false;
   public tituloProyecto: string = "Proyecto Uno";
 
-  constructor(private router: Router) {}
+  constructor(private router: Router,
+    private projectService : ProjectService) {}
 
   addProject() {
     this.router.navigate(['/edit-project']);
   }
 
   ngOnInit() {
+    this.getAllCities();
     var gradientChartOptionsConfigurationWithTooltipBlue: any = {
       maintainAspectRatio: false,
       legend: {
@@ -472,5 +476,16 @@ export class DashboardComponent implements OnInit {
   public updateOptions() {
     this.myChartData.data.datasets[0].data = this.data;
     this.myChartData.update();
+  }
+  getAllCities(){
+    this.projectService.getAllProjects().subscribe(
+      response => {
+        let resJson: any = response.json();
+        this.projectsList = resJson.projectList;
+      },
+      error => {
+        console.log('Error al cargar lista de projectos');
+      }
+    );
   }
 }
