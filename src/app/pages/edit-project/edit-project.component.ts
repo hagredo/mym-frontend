@@ -6,6 +6,9 @@ import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { CityService } from 'src/app/services/cities/city.service';
 import { SaveService } from 'src/app/services/saveproyect/save.service';
 import { DeliverableService } from 'src/app/services/deliverables/deliverable.service';
+import { PaymentMethodService } from 'src/app/services/paymentmethod/payment-method.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbdModalContentComponent } from 'src/app/components/ngbd-modal-content/ngbd-modal-content.component';
 
 @Component({
   selector: 'app-edit-project',
@@ -18,31 +21,45 @@ export class EditProjectComponent implements OnInit {
   public clientList : any;
   public stagesList : any;
   public teamList : any;
-  public deliverablesList : Array<any>;
+  public paymentMethodList: any;
+
   public projectForm: FormGroup;
-  public stages: FormArray;
   public show : boolean = false;
   public iterador : number;
-  public chekedMap : Map<number, boolean>;
+  public stagesListSelected : Array<any>;
+  public stagesListToSend : Array<any>;
+  public stagesIdList : Array<number>;
+  public deliverablesMap : Map<number, Array<number>>;
+
   constructor(
     private clientsService : ClientsService, 
     private stageService : StageService,
     private teamsService : TeamsService,
     private cityServie : CityService,
     private saveService : SaveService,
-    private deliverablesService : DeliverableService
+    private paymentMethodService : PaymentMethodService,
+    private modalService: NgbModal
   ) {
-    this.deliverablesList = new Array<any>();
-    this.chekedMap = new Map<number, boolean>();
-    this.stages = new FormArray([]);
+    this.stagesListSelected = new Array<any>();
+    this.stagesListToSend = new Array<any>();
+    this.stagesIdList = new Array<number>();
+    this.deliverablesMap = new Map<number, Array<number>>();
     this.projectForm = new FormGroup({
       city: new FormControl('', Validators.required),
       client: new FormControl('', Validators.required),
+      contractNumber: new FormControl('', Validators.required),
       projectName: new FormControl('', Validators.required),
       team: new FormControl('', Validators.required),
       status: new FormControl('', Validators.required),
       value: new FormControl('', Validators.required),
-      stages: this.stages
+      paymentMethod: new FormControl('', Validators.required),
+      initExecution: new FormControl('', Validators.required),
+      endExecution: new FormControl('', Validators.required),
+      initExtension: new FormControl({value: '', disabled: true}, Validators.required),
+      endExtension: new FormControl('', Validators.required),
+      initSuspension: new FormControl({value: '', disabled: true}, Validators.required),
+      endSuspension: new FormControl('', Validators.required),
+      stageSelected: new FormControl('', Validators.required)
     });
   }
 
@@ -51,47 +68,159 @@ export class EditProjectComponent implements OnInit {
     this.getAllCities();
     this.getAllStages();
     this.getAllTeams();
-    this.getAllDeliverables();
+    this.getAllPaymentMethods();
   }
 
-  createProject() {
+  saveProject() {
     let body = this.buildProjectBody();
-    this.saveService.saveProject(body).subscribe();
+    this.saveService.saveProject(body).subscribe(
+      response => {
+        this.openModal(response.json().responseMessage);
+        this.cleanForm();
+      },
+      error => {
+        this.openModal('Error: ' + error.responseMessage);
+      }
+    );
   }
 
   buildProjectBody():any {
-    let stages = new Array();
-    this.projectForm.get('stages').value.forEach(stage => {
-      let stageProject = {
-            idEtapa: stage.stageId,
-            peso: stage.weight
-          }
-      stages.push(stageProject);
-    });
     let body = {
       project: {
+        numeroContrato: this.projectForm.get('contractNumber').value,
+        nombre: this.projectForm.get('projectName').value,
         estado: this.projectForm.get('status').value,
-        idCiudad: this.projectForm.get('city').value,
         idCliente: this.projectForm.get('client').value,
+        idCiudad: this.projectForm.get('city').value,
         idEquipo: this.projectForm.get('team').value,
-        nombre: this.projectForm.get('projectName').value
+        idFormaPago: this.projectForm.get('paymentMethod').value,
+        inicioEjecucion: this.projectForm.get('initExecution').value,
+        finEjecucion: this.projectForm.get('endExecution').value,
+        inicioProrroga: this.projectForm.get('initExtension').value,
+        finProrroga: this.projectForm.get('endExtension').value,
+        inicioSuspension: this.projectForm.get('initSuspension').value,
+        finSuspension: this.projectForm.get('endSuspension').value,
+        status: 'A',
       },
       value: {
         idProyecto: 0,
         total: this.projectForm.get('value').value
       },
-      stagesProject : stages
+      stageProjectList : this.stagesListToSend,
+      deliverableStageList : this.buildDeliverableStageList()
     }
     return body;
   }
 
-  addStage(deliverableId:number, stage:number) {
-    /*const stage = new FormGroup({
-      stageId: new FormControl(stageId),
-      weight: new FormControl(weight)
+  buildDeliverableStageList(): Array<any> {
+    let deliverableStageList = new Array<any>();
+    this.deliverablesMap.forEach((deliverableArray: Array<any>, stageId: number) => {
+      deliverableArray.forEach(deliverable => {
+        let deliverableObject = {
+          idEtapa: stageId,
+          idEntregable: deliverable
+        }
+        deliverableStageList.push(deliverableObject);
+      });
     });
-    this.stages.push(stage);*/
-    
+    return deliverableStageList;
+  }
+
+  openModal(content:string) {
+    const modalRef = this.modalService.open(NgbdModalContentComponent);
+    modalRef.componentInstance.title = 'Guardar proyecto';
+    modalRef.componentInstance.content = content;
+  }
+
+  cleanForm() {
+    this.projectForm.get('client').setValue(0);
+    this.projectForm.get('contractNumber').setValue('');
+    this.projectForm.get('projectName').setValue('');
+    this.projectForm.get('city').setValue(0);
+    this.projectForm.get('team').setValue(0);
+    this.projectForm.get('status').setValue(0);
+    this.projectForm.get('value').setValue('');
+    this.projectForm.get('paymentMethod').setValue(0);
+    this.projectForm.get('initExecution').setValue('');
+    this.projectForm.get('endExecution').setValue('');
+    this.projectForm.get('initExtension').setValue('');
+    this.projectForm.get('endExtension').setValue('');
+    this.projectForm.get('initSuspension').setValue('');
+    this.projectForm.get('endSuspension').setValue('');
+    this.projectForm.get('stageSelected').setValue(0);
+    this.stagesListSelected = new Array<any>();
+    this.stagesListToSend = new Array<any>();
+    this.stagesIdList = new Array<number>();
+    this.deliverablesMap = new Map<number, Array<number>>();
+  } 
+  
+  changeInitDate(init:string, end:string) {
+    this.projectForm.get(init).setValue(this.projectForm.get(end).value);
+  }
+
+  addStage() {
+    let stageSelected;
+    this.stagesList.forEach(stage => {
+      if (stage.id == this.projectForm.get('stageSelected').value)
+      stageSelected = stage;
+    });
+    if(!this.stagesListSelected.includes(stageSelected) && stageSelected) {
+      this.stagesListSelected.push(stageSelected);
+    }
+  }
+
+  removeStage(stagId:number) {
+    for (let index = 0; index < this.stagesListSelected.length; index++) {
+      const stage = this.stagesListSelected[index];
+      if (stage.id == stagId) {
+        this.stagesListSelected.splice(index, 1);
+      }
+    }
+    this.deliverablesMap.delete(stagId);
+  }
+
+  onWeigthChange(stageId:number, weigth:number) {
+    this.stagesListToSend
+    let stageProject = {
+      idEtapa: stageId,
+      peso: weigth
+    }
+    if(!this.stagesIdList.includes(stageId)) {
+      this.stagesIdList.push(stageId);
+      this.stagesListToSend.push(stageProject);
+    } else {
+      for (let index = 0; index < this.stagesListToSend.length; index++) {
+        const stage = this.stagesListToSend[index];
+        if (stage.idEtapa == stageId) {
+          this.stagesListToSend[index] = stageProject;
+        }
+      }
+    }
+  }
+
+  showDeliverables(i : any){
+    if(i == this.iterador){
+      this.iterador = -1;
+    }else{
+      this.iterador = i;
+    }
+  }
+
+  getDeliverablesByStage(stageId : number): Array<number> {
+    return this.deliverablesMap.get(stageId);
+  }
+
+  processDeliverableSelection(deliberableId : number, stageId : number) {
+    let deliverableArray = this.deliverablesMap.get(stageId);
+    if (deliverableArray) {
+      if (!deliverableArray.includes(deliberableId) && deliberableId) {
+        deliverableArray.push(deliberableId);
+      }
+    } else if(deliberableId) {
+      deliverableArray = new Array<number>();
+      deliverableArray.push(deliberableId);
+    }
+    this.deliverablesMap.set(stageId, deliverableArray);
   }
 
   getAllClients(){
@@ -162,37 +291,21 @@ export class EditProjectComponent implements OnInit {
     );
   }
 
-  getAllDeliverables(){
-    let DeliverablesDefault = {
+  getAllPaymentMethods(){
+    let paymentMethodDefault = {
       id: 0
     }
-    this.teamList = new Array();
-    this.teamList.push(DeliverablesDefault);
-    this.deliverablesService.getAllDeliverables().subscribe(
+    this.paymentMethodList = new Array();
+    this.paymentMethodList.push(paymentMethodDefault);
+    this.paymentMethodService.getAllPaymentMethods().subscribe(
       response => {
         let resJson : any = response.json();
-        resJson.deliverableList.forEach(deliverable =>{
-          let objectDeliverable = {
-            id : deliverable.id,
-            nombre : deliverable.nombre,
-            checked : 'false'
-          };
-          this.deliverablesList.push(objectDeliverable);
-        });
+        this.paymentMethodList = resJson.paymentMethodList;;
       },
       error => {
-        console.log('Error al cargar lista de entregables');
+        console.log('Error al cargar lista de formas de pago');
       }
     );
-  }
-
-  showDeliverables(i : any){
-    console.log(JSON.stringify(this.deliverablesList));
-    if(i == this.iterador){
-      this.iterador = -1;
-    }else{
-      this.iterador = i;
-    }
   }
 
 }

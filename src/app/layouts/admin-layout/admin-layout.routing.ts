@@ -9,6 +9,8 @@ import { TablesComponent } from "../../pages/tables/tables.component";
 import { TypographyComponent } from "../../pages/typography/typography.component";
 import { AuthGuardService } from 'src/app/services/auth/auth-guard.service';
 import { EditProjectComponent } from 'src/app/pages/edit-project/edit-project.component';
+import { StagesComponent } from 'src/app/pages/stages/stages.component';
+import { ClientesComponent } from 'src/app/pages/clientes/clientes.component';
 // import { RtlComponent } from "../../pages/rtl/rtl.component";
 
 export const AdminLayoutRoutes: Routes = [
@@ -20,5 +22,7 @@ export const AdminLayoutRoutes: Routes = [
   { path: "tables", component: TablesComponent, canActivate: [AuthGuardService] },
   { path: "typography", component: TypographyComponent, canActivate: [AuthGuardService] },
   { path: "edit-project", component: EditProjectComponent, canActivate: [AuthGuardService] },
+  { path: "stages", component: StagesComponent, canActivate: [AuthGuardService] },
+  { path: "clients", component: ClientesComponent, canActivate: [AuthGuardService] }
   // { path: "rtl", component: RtlComponent }
 ];

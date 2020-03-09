@@ -1,15 +1,28 @@
  
 <div class=" content">
   <div class=" row">
-    <div class=" col-md-8">
+    <div class=" col-md-12">
       <div class=" card">
-        <div class=" card-header"><h4 class=" title">Agregar Cliente</h4></div>
+        <div class=" card-header"><h4 class=" title">GUARDAR CLIENTE</h4></div>
         <div class=" card-body">
           <form [formGroup]="clientForm">
             <div class=" row">
-              <div class=" col-md-6 pr-md-1">
+              <div class=" col-md-3 pr-md-1">
                 <div class=" form-group">
-                  <label> Nombre Cliente </label>
+                  <label> IDENTIFICACIÓN </label>
+                  <input
+                    class=" form-control"
+                    placeholder="Identificación cliente"
+                    type="number"
+                    formControlName="identification"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class=" row">
+              <div class=" col-md-5 pr-md-1">
+                <div class=" form-group">
+                  <label> NOMBRE </label>
                   <input
                     class=" form-control"
                     placeholder="Nombre cliente"
@@ -18,9 +31,9 @@
                   />
                 </div>
               </div>
-              <div class=" col-md-6 pr-md-1">
+              <div class=" col-md-5 pr-md-1">
                 <div class=" form-group">
-                  <label> Dirección </label>
+                  <label> DIRECCIÓN </label>
                   <input
                     class=" form-control"
                     placeholder="direccion cliente"
@@ -31,25 +44,25 @@
               </div>
             </div>
             <div class=" row">
-              <div class=" col-md-6 pr-md-1">
+              <div class=" col-md-5 pr-md-1">
                 <div class=" form-group">
-                  <label> Telefono </label>
+                  <label> TELÉFONO </label>
                   <input
                     class=" form-control"
                     placeholder="Telefono cliente"
-                    type="text"
+                    type="number"
                     formControlName="clientPhone"
                   />
                 </div>
               </div>
-              <div class=" col-md-6 pr-md-1">
+              <div class=" col-md-5 pr-md-1">
                 <div class=" form-group">
-                  <label> Contacto directo </label>
+                  <label> CONTACTO </label>
                   <input
                     class=" form-control"
-                    placeholder="contacto"
+                    placeholder="contacto directo"
                     type="text"
-                    formControlName="client"
+                    formControlName="contact"
                   />
                 </div>
               </div>
@@ -57,10 +70,96 @@
           </form>
         </div>
         <div class=" card-footer">
-          <button class=" btn btn-fill btn-danger" (click)="createProject()">Crear</button>
+          <button 
+            class=" btn btn-fill btn-danger" 
+            (click)="saveClient()" 
+            [disabled]="!clientForm.valid"
+          >
+            Guardar
+          </button>
         </div>
       </div>
     </div>
-    
   </div>
+
+  <div class=" row">
+    <div class=" col-12">
+      <div class=" card">
+
+        <div class=" card-header">
+          <div class=" row">
+            <div class=" col-sm-6 text-left">
+              <h4 class=" card-title">{{ this.clientSelected.nombre }}</h4>
+            </div>
+            <div class=" col-sm-6">
+              <div
+                class=" btn-group btn-group-toggle float-right"
+                data-toggle="buttons"
+              >
+                <label class=" btn btn-sm btn-danger btn-simple" (click)="editClient();clicked1=true;clicked2=false" [ngClass]="{'active':clicked1===true}">
+                  <input
+                    class=" d-none d-sm-none"
+                    name="options"
+                    type="radio"
+                  />
+                  <span
+                    class=" d-none d-sm-block d-md-block d-lg-block d-xl-block"
+                  >
+                    Editar
+                  </span>
+                  <span class=" d-block d-sm-none">
+                    <i class=" tim-icons icon-gift-2"> </i>
+                  </span>
+                </label>
+                <label class=" btn btn-sm btn-danger btn-simple" (click)="clicked1=false;clicked2=true" [ngClass]="{'active':clicked2===true}">
+                  <input class=" d-none" name="options" type="radio" />
+                  <span
+                    class=" d-none d-sm-block d-md-block d-lg-block d-xl-block"
+                  >
+                    Eliminar
+                  </span>
+                  <span class=" d-block d-sm-none">
+                    <i class=" tim-icons icon-tap-02"> </i>
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class=" card-body">
+          <div class=" table-responsive">
+            <table class=" table tablesorter" id="">
+              <thead class=" text-primary">
+                <tr>
+                  <th>Identificación</th>
+                  <th>Nombre</th>
+                  <th>Dirección</th>
+                  <th class=" text-center">Teléfono</th>
+                  <th>Contacto</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr 
+                  *ngFor="let client of clientList; let i = index" 
+                  [ngClass]="{resaltado: client.id == clientSelected.id}" 
+                  class="cursor"
+                  (click)="selectClient(client.id)"
+                >
+                  <td>{{ client.id }}</td>
+                  <td>{{ client.nombre }}</td>
+                  <td>{{ client.direccion }}</td>
+                  <td class=" text-center">{{ client.telefono }}</td>
+                  <td>{{ client.contacto }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+
 </div>

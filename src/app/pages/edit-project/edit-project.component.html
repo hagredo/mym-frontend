@@ -1,15 +1,14 @@
- 
 <div class=" content">
   <div class=" row">
-    <div class=" col-md-8">
+    <div class=" col-md-12">
       <div class=" card">
         <div class=" card-header"><h4 class=" title">Agregar proyecto</h4></div>
         <div class=" card-body">
           <form [formGroup]="projectForm">
             <div class=" row">
-              <div class=" col-md-6 pr-md-1">
+              <div class=" col-md-5 pr-md-1">
                 <div class=" form-group">
-                  <label> Cliente </label>
+                  <label> ENTIDAD CONTRATANTE </label>
                   <select class=" form-control font-color" formControlName="client">
                     <option value="0" selected>Seleccione...</option>
                     <option 
@@ -24,7 +23,7 @@
               </div>
               <div class=" col-md-6 pr-md-1">
                 <div class=" form-group">
-                  <label> Nombre Proyecto </label>
+                  <label> NOMBRE DE CONTRATO </label>
                   <input
                     class=" form-control"
                     placeholder="Nombre proyecto"
@@ -35,9 +34,20 @@
               </div>
             </div>
             <div class=" row">
-              <div class=" col-md-3 pr-md-1">
+              <div class=" col-md-4 pr-md-1">
                 <div class=" form-group">
-                  <label> Ciudad </label>
+                  <label> CONTRATO N° </label>
+                  <input
+                    class=" form-control"
+                    placeholder="Numero de contrato"
+                    type="text"
+                    formControlName="contractNumber"
+                  />
+                </div>
+              </div>
+              <div class=" col-md-4 pr-md-1">
+                <div class=" form-group">
+                  <label> CIUDAD </label>
                   <select class=" form-control font-color" formControlName="city">
                     <option value="0" selected>Seleccione...</option>
                     <option 
@@ -52,7 +62,7 @@
               </div>
               <div class=" col-md-3 pr-md-1">
                 <div class=" form-group">
-                  <label> Equipo </label>
+                  <label> EQUIPO </label>
                   <select class=" form-control font-color" formControlName="team">
                     <option value="0" selected>Seleccione...</option>
                     <option 
@@ -65,9 +75,11 @@
                   </select>
                 </div>
               </div>
+            </div>
+            <div class="row">
               <div class=" col-md-3 pr-md-1">
                 <div class=" form-group">
-                  <label> Estado </label>
+                  <label> ESTADO </label>
                   <select class=" form-control font-color" formControlName="status">
                     <option value="0" [selected]="0 === 0">Seleccione...</option>
                     <option value="C">Creado</option>
@@ -76,9 +88,9 @@
                   </select>
                 </div>
               </div>
-              <div class=" col-md-3 pr-md-1">
+              <div class=" col-md-4 pr-md-1">
                 <div class=" form-group">
-                  <label > Valor contrato </label>
+                  <label > VALOR CONTRATO </label>
                   <input
                     class=" form-control"
                     placeholder="Valor proyecto"
@@ -87,62 +99,141 @@
                   />
                 </div>
               </div>
+              <div class=" col-md-4 pr-md-1">
+                <div class=" form-group">
+                  <label> FORMAS DE PAGO </label>
+                  <select class=" form-control font-color" formControlName="paymentMethod">
+                    <option value="0" selected>Seleccione...</option>
+                    <option 
+                      *ngFor="let paymentMethod of paymentMethodList" 
+                      [selected]="paymentMethod.id === 0"
+                      [value]="paymentMethod.id"
+                    >
+                      {{paymentMethod.descripcion}}
+                    </option>
+                  </select>
+                </div>
+              </div>
             </div>
-            <div class=" row">
+            <div class="row">
               <div class="col-md-3 pr-md-1">
+                <h5 class=" title">PLAZO DE EJECUCION INICIAL</h5>
                 <div class=" form-group">
                   <label> Fecha Inicial </label>
-                  <input class="form-control" type="date" />
+                  <input 
+                    class="form-control" 
+                    type="date"
+                    formControlName="initExecution" 
+                  />
                 </div>
-              </div>
-              <div class="col-md-3 pr-md-1">
                 <div class=" form-group">
                   <label> Fecha Final </label>
-                  <input class="form-control " type="date" />
+                  <input 
+                    class="form-control " 
+                    type="date" 
+                    formControlName="endExecution" 
+                    (change)="changeInitDate('initExtension', 'endExecution')"
+                  />
                 </div>
               </div>
-              <div class="col-md-3 pr-md-1">
+              <div class="col-md-3 offset-md-1 pr-md-1">
+                <h5 class=" title">PRORROGA O ADICION EN TIEMPO</h5>
+                <div class=" form-group">
+                  <label> Fecha Inicial </label>
+                  <input 
+                    class="form-control" 
+                    type="date" 
+                    formControlName="initExtension"
+                  />
+                </div>
                 <div class=" form-group">
                   <label> Fecha Final </label>
-                  <input class="form-control " type="date" />
+                  <input 
+                    class="form-control " 
+                    type="date" 
+                    formControlName="endExtension" 
+                    (change)="changeInitDate('initSuspension', 'endExtension')"
+                  />
+                </div>
+              </div>
+              <div class="col-md-3 offset-md-1 pr-md-1">
+                <h5 class=" title">PLAZO DE SUSPENSION</h5>
+                <div class=" form-group">
+                  <label> Fecha Inicial </label>
+                  <input 
+                    class="form-control"
+                    type="date" 
+                    formControlName="initSuspension"
+                  />
+                </div>
+                <div class=" form-group">
+                  <label> Fecha Final </label>
+                  <input 
+                    class="form-control " 
+                    type="date" 
+                    formControlName="endSuspension" 
+                  />
                 </div>
               </div>
             </div>
-            
-            <div class=" row">
-              <div class=" col-md-10 pr-md-1">
+            <div class="row">
+              <div class="col-md-7 pr-md-1">
+                <h5 class=" title">ETAPAS</h5>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 pr-md-1">
+                <div class=" form-group">
+                  <select class=" form-control font-color" formControlName="stageSelected">
+                    <option value="0" selected>Seleccione...</option>
+                    <option 
+                      *ngFor="let stage of stagesList; index as i" 
+                      [selected]="stage.id === 0"
+                      [value]="stage.id"
+                    >
+                      {{stage.nombre}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-1 pr-md-1">
+                <button type="button" class="btn btn-primary btn-sm" (click)="addStage()">+</button>
+              </div>
+            </div>
+
+            <div class=" row" *ngIf="stagesListSelected.length > 0">
+              <div class=" col-md-11 pr-md-1">
                 <div class=" table-responsive">
                   <table class="table" id="">
                     <thead class=" text-primary">
                       <tr>
                         <th class="td-description">Nombre</th>
-                        <th class="td-weight">Peso</th>
+                        <th class="td-weight">Peso %</th>
+                        <th class="td-deliverables">Entregables</th>
                       </tr>
                     </thead>
-                    <tbody *ngFor="let stage of stagesList; index as i">
+                    <tbody *ngFor="let stage of stagesListSelected; index as i">
                       <tr>
                         <td class="td-description">{{stage.nombre}}</td>
-                        <td class="td-weight"><p><i class="tim-icons icon-single-copy-04" (click)="showDeliverables(i)"></i></p></td>
+                        <td class="td-description">
+                          <input class=" form-control" type="number" (change)="onWeigthChange(stage.id, weigth.value)" #weigth>
+                        </td>
+                        <td class="td-weight">
+                          <p>
+                            &nbsp;&nbsp;
+                            <i class="tim-icons icon-single-copy-04 cursor" (click)="showDeliverables(i)"></i>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <i class="tim-icons icon-simple-remove cursor" (click)="removeStage(stage.id)"></i>
+                          </p>
+                        </td>
                       </tr>
                       <tr *ngIf="i == iterador" class="tr-background">
-                        <div class=" table-responsive">
-                          <table class="table">
-                            <tbody>
-                              <tr *ngFor="let deliverable of deliverablesList">
-                                <td class="td-description">{{deliverable.nombre}}</td>
-                                <td class="td-apply">
-                                  <input 
-                                    class="apply-input" 
-                                    checked="{{deliverable.checked}}" 
-                                    type="checkbox"
-                                    (click)="addStage(deliverable.id, i)"
-                                  />
-                                </td>        
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
+                        <app-deliverables 
+                          [deliverableIds]="getDeliverablesByStage(stage.id)" 
+                          (deliverableSelection)="processDeliverableSelection($event, stage.id)">
+                        </app-deliverables>
                       </tr>
+                      <br>
                     </tbody>
                   </table>
                 </div>
@@ -152,12 +243,15 @@
           </form>
         </div>
         <div class=" card-footer">
-          <button class=" btn btn-fill btn-danger" (click)="createProject()">Crear</button>
+          <button 
+            class=" btn btn-fill btn-primary" 
+            (click)="saveProject()" 
+            [disabled]="!projectForm.valid"
+          >
+            Guardar
+          </button>
         </div>
       </div>
-    </div>
-    <div class=" col-md-4">
-      <app-business-card></app-business-card>
     </div>
   </div>
 </div>

@@ -14,7 +14,7 @@ import { TablesComponent } from "../../pages/tables/tables.component";
 import { TypographyComponent } from "../../pages/typography/typography.component";
 // import { RtlComponent } from "../../pages/rtl/rtl.component";
 
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbActiveModal, NgbModal, NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { UserService } from 'src/app/services/user/user.service';
 import { HttpModule } from '@angular/http';
 import { EditProjectComponent } from 'src/app/pages/edit-project/edit-project.component';
@@ -26,6 +26,11 @@ import { CityService } from 'src/app/services/cities/city.service';
 import { SaveService } from 'src/app/services/saveproyect/save.service';
 import { BusinessCardComponent } from 'src/app/pages/components/business-card/business-card.component';
 import { DeliverableService } from 'src/app/services/deliverables/deliverable.service';
+import { StagesComponent } from 'src/app/pages/stages/stages.component';
+import { ClientesComponent } from 'src/app/pages/clientes/clientes.component';
+import { DeliverablesComponent } from 'src/app/pages/deliverables/deliverables.component';
+import { PaymentMethodService } from 'src/app/services/paymentmethod/payment-method.service';
+import { NgbdModalContentComponent } from 'src/app/components/ngbd-modal-content/ngbd-modal-content.component';
 
 @NgModule({
   imports: [
@@ -46,9 +51,13 @@ import { DeliverableService } from 'src/app/services/deliverables/deliverable.se
     NotificationsComponent,
     MapComponent,
     EditProjectComponent,
-    BusinessCardComponent
-    // RtlComponent
+    BusinessCardComponent,
+    StagesComponent,
+    ClientesComponent, 
+    DeliverablesComponent, 
+    NgbdModalContentComponent
   ],
+  entryComponents: [NgbdModalContentComponent],
   providers: [
     UserService,
     HttpConfig,
@@ -57,7 +66,8 @@ import { DeliverableService } from 'src/app/services/deliverables/deliverable.se
     TeamsService,
     CityService,
     SaveService,
-    DeliverableService
+    DeliverableService,
+    PaymentMethodService
   ]
 })
 export class AdminLayoutModule {}

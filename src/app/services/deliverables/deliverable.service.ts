@@ -18,4 +18,11 @@ export class DeliverableService {
     this.url = this.httpConfig.getUrl("getAllDeliverables");
     return this.http.get(this.url, this.options);
   }
+  
+  saveDeliverable(body : any) : Observable<Response>{
+    this.options = this.httpConfig.getOptions();
+    this.url = this.httpConfig.getUrl("saveDeliverable");
+    return this.http.post(this.url, body, this.options);
+  }
+
 }

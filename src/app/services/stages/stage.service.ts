@@ -20,4 +20,11 @@ export class StageService {
     this.url = this.httpConfig.getUrl("getAllStages");
     return this.http.get(this.url, this.options);
   }
+  
+  saveStage(body : any) : Observable<Response>{
+    this.options = this.httpConfig.getOptions();
+    this.url = this.httpConfig.getUrl("saveStage");
+    return this.http.post(this.url, body, this.options);
+  }
+
 }

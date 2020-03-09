@@ -1,0 +1,32 @@
+<form [formGroup]="deliverableForm">
+  <div class="row">
+    <div class="col-md-10 pr-md-1">
+      <div class=" form-group">
+        <select class=" form-control font-color" formControlName="deliverableSelected">
+          <option value="0" selected>Seleccione...</option>
+          <option 
+            *ngFor="let deliverable of deliverablesList; index as i" 
+            [selected]="deliverable.id === 0"
+            [value]="deliverable.id"
+          >
+            {{deliverable.nombre}}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div class="col-md-1 pr-md-1">
+      <button type="button" class="btn btn-primary btn-sm" (click)="addDeliverable(); onDeliverableSelection();">+</button>
+    </div>
+  </div>
+  <br>
+  <div *ngIf="deliverablesListSelected.length > 0">
+    <ul class="list-group">
+      <li class="list-group-item deliv-background" *ngFor="let deliverable of deliverablesListSelected">
+        <div class="row">
+          <div class="col-md-11">{{deliverable.nombre}}</div>
+          <div class="col-md-1 cursor" (click)="removeDeliverable(deliverable.id)"><i class=" tim-icons icon-simple-remove"></i></div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</form>

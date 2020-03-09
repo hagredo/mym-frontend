@@ -1,0 +1,64 @@
+<div class=" content">
+  <div class=" row">
+    <div class=" col-md-8">
+      <div class=" card">
+        <div class=" card-header"><h4 class=" title">ETAPAS Y ENTREGABLES</h4></div>
+        <div class=" card-body">
+          <div class=" row">
+            <div class=" col-md-5 pr-md-1">
+              <form [formGroup]="stageForm">
+                <div class=" form-group">
+                  <label> NOMBRE ETAPA</label>
+                  <input
+                    class=" form-control"
+                    placeholder="Nombre etapa"
+                    type="text"
+                    formControlName="stageName"
+                  />
+                </div>
+              </form>
+            </div>
+            <div class=" col-md-5 pr-md-1">
+              <form [formGroup]="deliverableForm">
+                <div class=" form-group">
+                  <label> NOMBRE ENTREGABLE</label>
+                  <input
+                    class=" form-control"
+                    placeholder="Nombre entregable"
+                    type="text"
+                    formControlName="deliverableName"
+                  />
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class=" card-footer">
+          <div class="row">
+            <div class="col-md-5">
+              <button 
+                class=" btn btn-fill btn-danger" 
+                (click)="saveStage()"
+                [disabled]="!stageForm.valid"
+              >
+                Guardar etapa
+              </button>
+            </div>
+            <div class="col-md-5">
+              <button 
+                class=" btn btn-fill btn-danger" 
+                (click)="saveDeliverable()"
+                [disabled]="!deliverableForm.valid"
+              >
+                Guardar entregable
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class=" col-md-4">
+      <app-business-card></app-business-card>
+    </div>
+  </div>
+</div>
