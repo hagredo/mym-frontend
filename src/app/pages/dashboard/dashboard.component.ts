@@ -5,7 +5,8 @@ import { ProjectService } from 'src/app/services/projects/project.service';
 
 @Component({
   selector: "app-dashboard",
-  templateUrl: "dashboard.component.html"
+  templateUrl: "dashboard.component.html",
+  styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
   public projectsList : any;
@@ -14,20 +15,65 @@ export class DashboardComponent implements OnInit {
   public datasets: any;
   public data: any;
   public myChartData;
-  public clicked: boolean = true;
+  public clicked: boolean = false;
   public clicked1: boolean = false;
   public clicked2: boolean = false;
-  public tituloProyecto: string = "Proyecto Uno";
+  public tituloProyecto: string = '';
+  public projectSelected: any;
 
-  constructor(private router: Router,
-    private projectService : ProjectService) {}
+  constructor(
+    private router: Router,
+    private projectService : ProjectService
+  ) {
+      this.projectSelected = {};
+  }
 
   addProject() {
+    this.projectService.setProject({});
     this.router.navigate(['/edit-project']);
   }
 
+  editProject() {
+    this.projectService.setProject(this.projectSelected);
+    this.router.navigate(['/edit-project']);
+  }
+
+  selectProject(projectId:number) {
+    this.clicked = false;
+    this.clicked1 = false;
+    this.clicked2 = false;
+    this.projectsList.forEach(project => {
+      if (project.id == projectId)
+        this.projectSelected = project;
+    });
+  }
+
+  getAllProjects(){
+    this.projectService.getAllProjects().subscribe(
+      response => {
+        let resJson: any = response.json();
+        this.projectsList = resJson.projectList;
+        this.projectSelected = this.projectsList[0];
+        this.projectsList.forEach(project => {
+          if (project.estado === 'C') {
+            project.estado = 'CREADO'
+          }
+          if (project.estado === 'E') {
+            project.estado = 'EN EJECUCIÓN'
+          }
+          if (project.estado === 'F') {
+            project.estado = 'FINALIZADO'
+          }
+        });
+      },
+      error => {
+        console.log('Error al cargar lista de projectos');
+      }
+    );
+  }
+
   ngOnInit() {
-    this.getAllCities();
+    this.getAllProjects();
     var gradientChartOptionsConfigurationWithTooltipBlue: any = {
       maintainAspectRatio: false,
       legend: {
@@ -473,19 +519,10 @@ export class DashboardComponent implements OnInit {
     });
 
   }
+
   public updateOptions() {
     this.myChartData.data.datasets[0].data = this.data;
     this.myChartData.update();
   }
-  getAllCities(){
-    this.projectService.getAllProjects().subscribe(
-      response => {
-        let resJson: any = response.json();
-        this.projectsList = resJson.projectList;
-      },
-      error => {
-        console.log('Error al cargar lista de projectos');
-      }
-    );
-  }
+
 }

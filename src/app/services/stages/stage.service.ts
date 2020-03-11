@@ -15,13 +15,21 @@ export class StageService {
 
   constructor(private http: Http, private httpConfig : HttpConfig) { }
 
-  getAllStages() : Observable<Response>{
+  getAllStages() : Observable<Response> {
     this.options = this.httpConfig.getOptions();
     this.url = this.httpConfig.getUrl("getAllStages");
     return this.http.get(this.url, this.options);
   }
   
-  saveStage(body : any) : Observable<Response>{
+  getStagesByProject(projectId) : Observable<Response> {
+    this.options = this.httpConfig.getOptions();
+    this.varGet = new Array<string>();
+    this.varGet.push(projectId);
+    this.url = this.httpConfig.getUrl("getStagesByProject", this.varGet);
+    return this.http.get(this.url, this.options);
+  }
+  
+  saveStage(body : any) : Observable<Response> {
     this.options = this.httpConfig.getOptions();
     this.url = this.httpConfig.getUrl("saveStage");
     return this.http.post(this.url, body, this.options);

@@ -9,6 +9,8 @@ import { DeliverableService } from 'src/app/services/deliverables/deliverable.se
 import { PaymentMethodService } from 'src/app/services/paymentmethod/payment-method.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgbdModalContentComponent } from 'src/app/components/ngbd-modal-content/ngbd-modal-content.component';
+import { ProjectService } from 'src/app/services/projects/project.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-edit-project',
@@ -22,27 +24,34 @@ export class EditProjectComponent implements OnInit {
   public stagesList : any;
   public teamList : any;
   public paymentMethodList: any;
+  public projectSelected: any;
+  public isNotSelectedProject: boolean = true;
 
   public projectForm: FormGroup;
   public show : boolean = false;
   public iterador : number;
   public stagesListSelected : Array<any>;
+  public stagesListSelectedMap : Map<number, string>;
   public stagesListToSend : Array<any>;
   public stagesIdList : Array<number>;
   public deliverablesMap : Map<number, Array<number>>;
 
   constructor(
+    private router: Router,
     private clientsService : ClientsService, 
     private stageService : StageService,
     private teamsService : TeamsService,
     private cityServie : CityService,
     private saveService : SaveService,
+    private projectService : ProjectService,
     private paymentMethodService : PaymentMethodService,
+    private deliverableService : DeliverableService,
     private modalService: NgbModal
   ) {
     this.stagesListSelected = new Array<any>();
     this.stagesListToSend = new Array<any>();
     this.stagesIdList = new Array<number>();
+    this.stagesListSelectedMap = new Map<number, string>();
     this.deliverablesMap = new Map<number, Array<number>>();
     this.projectForm = new FormGroup({
       city: new FormControl('', Validators.required),
@@ -64,19 +73,86 @@ export class EditProjectComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.projectSelected = this.projectService.getProject();
     this.getAllClients();
     this.getAllCities();
     this.getAllStages();
     this.getAllTeams();
-    this.getAllPaymentMethods();
+    this.getAllPaymentMethods(); 
+    if (this.projectSelected && this.projectSelected.idCliente > 0) {
+      this.isNotSelectedProject = false;
+      this.fillForm();
+    } else {
+      this.isNotSelectedProject = true;
+    }
+  }
+
+  fillForm() {
+    this.projectForm.get('client').setValue(this.projectSelected.idCliente);
+    this.projectForm.get('contractNumber').setValue(this.projectSelected.numeroContrato);
+    this.projectForm.get('projectName').setValue(this.projectSelected.nombre);
+    this.projectForm.get('city').setValue(this.projectSelected.idCiudad);
+    this.projectForm.get('team').setValue(this.projectSelected.idEquipo);
+    if (this.projectSelected.estado === 'CREADO') {
+      this.projectSelected.estado = 'C'
+    }
+    if (this.projectSelected.estado === 'EN EJECUCIÓN') {
+      this.projectSelected.estado = 'E'
+    }
+    if (this.projectSelected.estado === 'FINALIZADO') {
+      this.projectSelected.estado = 'F'
+    }
+    this.projectForm.get('status').setValue(this.projectSelected.estado);
+    this.projectService.getValueByProject(this.projectSelected.id).subscribe(response => {
+      let valor = response.json().valor;
+      this.projectForm.get('value').setValue(valor.total);
+    });
+    this.projectForm.get('paymentMethod').setValue(this.projectSelected.idFormaPago);
+    this.projectForm.get('initExecution').setValue(this.transformDate(this.projectSelected.inicioEjecucion));
+    this.projectForm.get('endExecution').setValue(this.transformDate(this.projectSelected.finEjecucion));
+    this.projectForm.get('initExtension').setValue(this.transformDate(this.projectSelected.inicioProrroga));
+    this.projectForm.get('endExtension').setValue(this.transformDate(this.projectSelected.finProrroga));
+    this.projectForm.get('initSuspension').setValue(this.transformDate(this.projectSelected.inicioSuspension));
+    this.projectForm.get('endSuspension').setValue(this.transformDate(this.projectSelected.finSuspension));
+    this.projectForm.get('stageSelected').setValue(0);
+    this.stageService.getStagesByProject(this.projectSelected.id).subscribe(response => {
+      let stagesProject = response.json().stagesProjectList;
+      stagesProject.forEach(stage => {
+        let stageSelected = {
+          id: stage.id.idEtapa,
+          nombre: this.stagesListSelectedMap.get(stage.id.idEtapa),
+          peso: stage.id.peso
+        }
+        this.stagesListSelected.push(stageSelected);
+        this.onWeigthChange(stageSelected.id, stageSelected.peso);
+        this.stagesIdList.push(stageSelected.id);
+      });
+    });
+    this.deliverableService.getDeliverablesByProject(this.projectSelected.id).subscribe(response => {
+      let deliverablesProject = response.json().deliverableStageList;
+      deliverablesProject.forEach(deliberableStage => {
+        this.processDeliverableSelection(deliberableStage.id.idEntregable, deliberableStage.id.idEtapa);
+      });
+    });
+  }
+
+  transformDate(dateArray:Array<any>):string {
+    let year = dateArray[0];
+    let month = (parseInt(dateArray[1]) > 9) ? dateArray[1] : ('0' + dateArray[1]);
+    let day = (parseInt(dateArray[2]) > 9) ? dateArray[2] : ('0' + dateArray[2]);
+    return year + '-' + month + '-' + day;
   }
 
   saveProject() {
     let body = this.buildProjectBody();
+    if (this.projectSelected && this.projectSelected.id > 0) {
+      body.project.id = this.projectSelected.id;
+    }
     this.saveService.saveProject(body).subscribe(
       response => {
         this.openModal(response.json().responseMessage);
         this.cleanForm();
+        this.router.navigate(['/dashboard']);
       },
       error => {
         this.openModal('Error: ' + error.responseMessage);
@@ -103,7 +179,7 @@ export class EditProjectComponent implements OnInit {
         status: 'A',
       },
       value: {
-        idProyecto: 0,
+        idProyecto: (this.projectSelected && this.projectSelected.idCliente > 0) ? this.projectSelected.id : 0,
         total: this.projectForm.get('value').value
       },
       stageProjectList : this.stagesListToSend,
@@ -124,6 +200,10 @@ export class EditProjectComponent implements OnInit {
       });
     });
     return deliverableStageList;
+  }
+
+  goBack() {
+    this.router.navigate(['/dashboard']);
   }
 
   openModal(content:string) {
@@ -180,7 +260,6 @@ export class EditProjectComponent implements OnInit {
   }
 
   onWeigthChange(stageId:number, weigth:number) {
-    this.stagesListToSend
     let stageProject = {
       idEtapa: stageId,
       peso: weigth
@@ -267,6 +346,10 @@ export class EditProjectComponent implements OnInit {
       response => {
         let resJson : any = response.json();
         this.stagesList = resJson.stagesList;
+        this.stagesList.forEach(stage => {
+          stage.peso = 0;
+          this.stagesListSelectedMap.set(stage.id, stage.nombre);
+        });
       },
       error => {
         console.log('Error al cargar lista de etapas');

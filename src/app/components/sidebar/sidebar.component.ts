@@ -16,7 +16,7 @@ export const ROUTES: RouteInfo[] = [
     class: ""
   },
   {
-    path: "/edit-project",
+    path: "/icons",
     title: "Proyectos",
     rtlTitle: "لوحة القيادة",
     icon: "icon-notes",
