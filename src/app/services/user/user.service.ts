@@ -23,4 +23,10 @@ export class UserService {
     return this.http.get(this.url, this.options);
   }
 
+  getAllUsers() : Observable<Response>{
+    this.options = this.httpConfig.getOptions();
+    this.url = this.httpConfig.getUrl("getAllUsers");
+    return this.http.get(this.url, this.options);
+  }
+  
 }

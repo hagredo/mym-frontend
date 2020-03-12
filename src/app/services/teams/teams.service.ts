@@ -15,10 +15,16 @@ export class TeamsService {
 
   constructor(private http: Http, private httpConfig : HttpConfig) { }
 
-  getAllTeams() : Observable<Response>{
+  getAllTeams() : Observable<Response> {
     this.options = this.httpConfig.getOptions();
     this.url = this.httpConfig.getUrl("getAllTeams");
     return this.http.get(this.url, this.options);
   }
   
+  saveTeamt(body : any) : Observable<Response> {
+    this.options = this.httpConfig.getOptions();
+    this.url = this.httpConfig.getUrl("saveTeam");
+    return this.http.post(this.url, body, this.options);
+  }
+
 }

@@ -1,0 +1,164 @@
+<div class=" content">
+
+  <div class=" row">
+    <div class=" col-md-10 offset-1">
+      <div class=" card">
+        <div class=" card-header"><h4 class=" title">GUARDAR EQUIPO</h4></div>
+        <div class=" card-body">
+          <form [formGroup]="teamForm">
+            <div class=" row">
+              <div class=" col-md-5 pr-md-1">
+                <div class=" form-group">
+                  <label> NOMBRE </label>
+                  <input
+                    class=" form-control"
+                    placeholder="Nombre equipo"
+                    type="text"
+                    formControlName="teamName"
+                  />
+                </div>
+              </div>
+              <div class=" col-md-5 pr-md-1">
+                <div class=" form-group">
+                  <label> INTEGRANTES </label>
+                  <select class=" form-control font-color" formControlName="userSelected">
+                    <option value="0" selected>Seleccione...</option>
+                    <option 
+                      *ngFor="let user of userList; index as i" 
+                      [selected]="user.id === 0"
+                      [value]="user.id"
+                    >
+                      {{user.name}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-1 pr-md-1">
+                <label> AGREGAR </label>
+                <button type="button" style="margin-left: 15%;" class="btn btn-primary btn-sm" (click)="addUser()">+</button>
+              </div>
+            </div>
+            <div class=" row" *ngIf="userListSelected.length > 0">
+              <div class=" col-md-11 pr-md-1">
+                <div class=" table-responsive">
+                  <table class="table" id="">
+                    <thead class=" text-primary">
+                      <tr>
+                        <th class="td-description">Usuario</th>
+                        <th class="td-deliverables">Nombre</th>
+                        <th class="td-roles">Rol</th>
+                        <th class="td-roles text-center">Lider</th>
+                        <th class="td-delete text-center">Eliminar</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        *ngFor="let user of userListSelected; index as i" 
+                        [ngClass]="{resaltado: user.id == userLeader.id}"
+                      >
+                        <td class="td-description">{{ user.username }}</td>
+                        <td class="td-description">{{ user.name }}</td>
+                        <td class="td-description">{{ user.role }}</td>
+                        <td class="td-description text-center">
+                          <p>
+                            <i class="tim-icons icon-user-run cursor" (click)="selectLeader(user.id)"></i>
+                          </p>
+                        </td>
+                        <td class="td-weight text-center">
+                          <p>
+                            <i class="tim-icons icon-simple-remove cursor" (click)="removeUser(user.id)"></i>
+                          </p>
+                        </td>
+                      </tr>
+                      <br>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class=" card-footer">
+          <button 
+            class=" btn btn-fill btn-danger" 
+            (click)="saveTeam()" 
+            [disabled]="!teamForm.valid"
+          >
+            Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class=" row">
+    <div class=" col-10 offset-1">
+      <div class=" card">
+        <div class=" card-header">
+          <div class=" row">
+            <div class=" col-sm-6 text-left">
+              <h4 class=" card-title">{{ teamSelected.nombre }}</h4>
+            </div>
+            <div class=" col-sm-6">
+              <div
+                class=" btn-group btn-group-toggle float-right"
+                data-toggle="buttons"
+              >
+                <label class=" btn btn-sm btn-danger btn-simple" (click)="editTeam();clicked1=true;clicked2=false" [ngClass]="{'active':clicked1===true}">
+                  <input
+                    class=" d-none d-sm-none"
+                    name="options"
+                    type="radio"
+                  />
+                  <span
+                    class=" d-none d-sm-block d-md-block d-lg-block d-xl-block"
+                  >
+                    Editar
+                  </span>
+                  <span class=" d-block d-sm-none">
+                    <i class=" tim-icons icon-gift-2"> </i>
+                  </span>
+                </label>
+                <label class=" btn btn-sm btn-danger btn-simple" (click)="clicked1=false;clicked2=true" [ngClass]="{'active':clicked2===true}">
+                  <input class=" d-none" name="options" type="radio" />
+                  <span
+                    class=" d-none d-sm-block d-md-block d-lg-block d-xl-block"
+                  >
+                    Eliminar
+                  </span>
+                  <span class=" d-block d-sm-none">
+                    <i class=" tim-icons icon-tap-02"> </i>
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class=" card-body">
+          <div class=" table-responsive">
+            <table class=" table tablesorter" id="">
+              <thead class=" text-primary">
+                <tr>
+                  <th class=" text-center">Identificación</th>
+                  <th class=" text-center">Nombre</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr 
+                  *ngFor="let team of teamList; let i = index" 
+                  [ngClass]="{resaltado: team.id == teamSelected.id}" 
+                  class="cursor"
+                  (click)="selectTeam(team.id)"
+                >
+                  <td class=" text-center">{{ team.id }}</td>
+                  <td class=" text-center">{{ team.nombre }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

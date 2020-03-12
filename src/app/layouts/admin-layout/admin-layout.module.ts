@@ -32,6 +32,7 @@ import { SaveService } from 'src/app/services/saveproyect/save.service';
 import { DeliverableService } from 'src/app/services/deliverables/deliverable.service';
 import { ProjectService } from 'src/app/services/projects/project.service';
 import { TruncatePipe } from 'src/app/pipes/truncate.pipe';
+import { TeamsComponent } from 'src/app/pages/teams/teams.component';
 
 @NgModule({
   imports: [
@@ -56,7 +57,8 @@ import { TruncatePipe } from 'src/app/pipes/truncate.pipe';
     ClientesComponent, 
     DeliverablesComponent, 
     NgbdModalContentComponent,
-    BusinessCardComponent,
+    BusinessCardComponent, 
+    TeamsComponent,
     TruncatePipe
   ],
   entryComponents: [
