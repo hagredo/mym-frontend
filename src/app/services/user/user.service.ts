@@ -29,4 +29,12 @@ export class UserService {
     return this.http.get(this.url, this.options);
   }
   
+  getUsersByTeam(teamId) : Observable<Response> {
+    this.options = this.httpConfig.getOptions();
+    this.varGet = new Array<string>();
+    this.varGet.push(teamId);
+    this.url = this.httpConfig.getUrl("getUsersByTeam", this.varGet);
+    return this.http.get(this.url, this.options);
+  }
+  
 }

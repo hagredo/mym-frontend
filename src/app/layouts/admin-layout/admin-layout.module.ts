@@ -33,6 +33,7 @@ import { DeliverableService } from 'src/app/services/deliverables/deliverable.se
 import { ProjectService } from 'src/app/services/projects/project.service';
 import { TruncatePipe } from 'src/app/pipes/truncate.pipe';
 import { TeamsComponent } from 'src/app/pages/teams/teams.component';
+import { PaymentMethodsComponent } from 'src/app/pages/payment-methods/payment-methods.component';
 
 @NgModule({
   imports: [
@@ -59,6 +60,7 @@ import { TeamsComponent } from 'src/app/pages/teams/teams.component';
     NgbdModalContentComponent,
     BusinessCardComponent, 
     TeamsComponent,
+    PaymentMethodsComponent, 
     TruncatePipe
   ],
   entryComponents: [

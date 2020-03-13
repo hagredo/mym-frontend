@@ -49,7 +49,6 @@ export class TeamsComponent implements OnInit {
     if (!this.isNewTeam && this.teamSelected && this.teamSelected.id > 0) {
       body.team.id = this.teamSelected.id;
     }
-    console.log(JSON.stringify(body));
     this.teamsService.saveTeamt(body).subscribe(
       response => {
         this.openModal(response.json().responseMessage);
@@ -91,6 +90,15 @@ export class TeamsComponent implements OnInit {
     this.isNewTeam = false;
     this.teamForm.get('teamName').setValue(this.teamSelected.nombre);
     this.teamForm.get('userSelected').setValue(0);
+    this.userService.getUsersByTeam(this.teamSelected.id).subscribe(response => {
+      this.userListSelected = response.json().userList;
+      this.userListSelected.forEach(user => {
+        if (user.isLeader) {
+          this.userLeader = user;
+        }
+      });
+      console.log(JSON.stringify(this.userListSelected));
+    });
   }
 
   selectTeam(teamId:number) {
@@ -125,7 +133,6 @@ export class TeamsComponent implements OnInit {
     this.teamForm.get('teamName').setValue('');
     this.teamForm.get('userSelected').setValue(0);
     this.userListSelected = new Array<any>();
-    this.teamSelected = {};
     this.userSelected = {};
     this.userLeader = {};
     this.clicked1 = false;

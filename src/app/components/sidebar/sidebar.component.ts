@@ -41,7 +41,15 @@ export const ROUTES: RouteInfo[] = [
     title: "Equipos",
     rtlTitle: "خرائط",
     icon: "icon-single-02",
-    class: "" },
+    class: "" 
+  },
+  {
+    path: "/payment-methods",
+    title: "Formas de pago",
+    rtlTitle: "ملف تعريفي للمستخدم",
+    icon: "icon-coins",
+    class: ""
+  },
   {
     path: "/notifications",
     title: "Notificaciones",
@@ -49,7 +57,6 @@ export const ROUTES: RouteInfo[] = [
     icon: "icon-bell-55",
     class: ""
   },
-
   {
     path: "/user",
     title: "Informes",
