@@ -5,12 +5,12 @@ import { TeamsService } from 'src/app/services/teams/teams.service';
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { CityService } from 'src/app/services/cities/city.service';
 import { SaveService } from 'src/app/services/saveproyect/save.service';
-import { DeliverableService } from 'src/app/services/deliverables/deliverable.service';
 import { PaymentMethodService } from 'src/app/services/paymentmethod/payment-method.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgbdModalContentComponent } from 'src/app/components/ngbd-modal-content/ngbd-modal-content.component';
 import { ProjectService } from 'src/app/services/projects/project.service';
 import { Router } from '@angular/router';
+import { DeliverableService } from 'src/app/services/deliverables/deliverable.service';
 
 @Component({
   selector: 'app-edit-project',
