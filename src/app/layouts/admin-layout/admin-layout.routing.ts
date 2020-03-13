@@ -12,6 +12,7 @@ import { EditProjectComponent } from 'src/app/pages/edit-project/edit-project.co
 import { StagesComponent } from 'src/app/pages/stages/stages.component';
 import { ClientesComponent } from 'src/app/pages/clientes/clientes.component';
 import { TeamsComponent } from 'src/app/pages/teams/teams.component';
+import { PaymentMethodsComponent } from 'src/app/pages/payment-methods/payment-methods.component';
 // import { RtlComponent } from "../../pages/rtl/rtl.component";
 
 export const AdminLayoutRoutes: Routes = [
@@ -25,6 +26,6 @@ export const AdminLayoutRoutes: Routes = [
   { path: "edit-project", component: EditProjectComponent, canActivate: [AuthGuardService] },
   { path: "stages", component: StagesComponent, canActivate: [AuthGuardService] },
   { path: "clients", component: ClientesComponent, canActivate: [AuthGuardService] },
-  { path: "teams", component: TeamsComponent, canActivate: [AuthGuardService] }
-  // { path: "rtl", component: RtlComponent }
+  { path: "teams", component: TeamsComponent, canActivate: [AuthGuardService] },
+  { path: "payment-methods", component: PaymentMethodsComponent, canActivate: [AuthGuardService] }
 ];
