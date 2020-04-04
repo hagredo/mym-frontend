@@ -64,7 +64,7 @@
               <thead class=" text-primary">
                 <tr>
                   <th>Número Contrato</th>
-                  <th>Nombre</th>
+                  <th>Código Proyecto</th>
                   <th>Inicio ejecución</th>
                   <th>Fin ejecución</th>
                   <th>Estado</th>
@@ -77,8 +77,8 @@
                   class="cursor"
                   (click)="selectProject(project.id)"
                 >
-                  <td>{{project.numeroContrato}}</td>
-                  <td>{{project.nombre | truncate: 30}}</td>
+                  <td>{{project.contrato.numeroContrato}}</td>
+                  <td>{{project.codigoProyecto | truncate: 30}}</td>
                   <td>{{project.inicioEjecucion | date:"mediumDate"}}</td>
                   <td>{{project.finEjecucion | date:"mediumDate"}}</td>
                   <td>{{project.estado}}</td>

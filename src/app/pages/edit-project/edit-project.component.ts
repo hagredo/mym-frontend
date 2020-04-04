@@ -11,6 +11,7 @@ import { NgbdModalContentComponent } from 'src/app/components/ngbd-modal-content
 import { ProjectService } from 'src/app/services/projects/project.service';
 import { Router } from '@angular/router';
 import { DeliverableService } from 'src/app/services/deliverables/deliverable.service';
+import { ContractService } from 'src/app/services/contract/contract.service';
 
 @Component({
   selector: 'app-edit-project',
@@ -20,6 +21,7 @@ import { DeliverableService } from 'src/app/services/deliverables/deliverable.se
 export class EditProjectComponent implements OnInit {
 
   public cityList : any;
+  public contractList: any;
   public clientList : any;
   public stagesList : any;
   public teamList : any;
@@ -46,6 +48,7 @@ export class EditProjectComponent implements OnInit {
     private projectService : ProjectService,
     private paymentMethodService : PaymentMethodService,
     private deliverableService : DeliverableService,
+    private contractService : ContractService,
     private modalService: NgbModal
   ) {
     this.stagesListSelected = new Array<any>();
@@ -57,16 +60,16 @@ export class EditProjectComponent implements OnInit {
       city: new FormControl('', Validators.required),
       client: new FormControl('', Validators.required),
       contractNumber: new FormControl('', Validators.required),
-      projectName: new FormControl('', Validators.required),
+      codeProject: new FormControl('', Validators.required),
       team: new FormControl('', Validators.required),
       status: new FormControl('', Validators.required),
       value: new FormControl('', Validators.required),
       paymentMethod: new FormControl('', Validators.required),
       initExecution: new FormControl('', Validators.required),
       endExecution: new FormControl('', Validators.required),
-      initExtension: new FormControl({value: '', disabled: true}, Validators.required),
+      initExtension: new FormControl({value: '', disabled: false}, Validators.required),
       endExtension: new FormControl('', Validators.required),
-      initSuspension: new FormControl({value: '', disabled: true}, Validators.required),
+      initSuspension: new FormControl({value: '', disabled: false}, Validators.required),
       endSuspension: new FormControl('', Validators.required),
       stageSelected: new FormControl('', Validators.required)
     });
@@ -74,6 +77,7 @@ export class EditProjectComponent implements OnInit {
 
   ngOnInit() {
     this.projectSelected = this.projectService.getProject();
+    this.getAllContracts();
     this.getAllClients();
     this.getAllCities();
     this.getAllStages();
@@ -89,8 +93,8 @@ export class EditProjectComponent implements OnInit {
 
   fillForm() {
     this.projectForm.get('client').setValue(this.projectSelected.idCliente);
-    this.projectForm.get('contractNumber').setValue(this.projectSelected.numeroContrato);
-    this.projectForm.get('projectName').setValue(this.projectSelected.nombre);
+    this.projectForm.get('contractNumber').setValue(this.projectSelected.contrato.id);
+    this.projectForm.get('codeProject').setValue(this.projectSelected.codigoProyecto);
     this.projectForm.get('city').setValue(this.projectSelected.idCiudad);
     this.projectForm.get('team').setValue(this.projectSelected.idEquipo);
     if (this.projectSelected.estado === 'CREADO') {
@@ -161,10 +165,16 @@ export class EditProjectComponent implements OnInit {
   }
 
   buildProjectBody():any {
+    let contract:any = this.projectSelected.contrato;
+    this.contractList.forEach(contrato => {
+      if (contrato.id == this.projectForm.get('contractNumber').value) {
+        contract = contrato;
+      }
+    });
     let body = {
       project: {
-        numeroContrato: this.projectForm.get('contractNumber').value,
-        nombre: this.projectForm.get('projectName').value,
+        contrato: contract,
+        codigoProyecto: this.projectForm.get('codeProject').value,
         estado: this.projectForm.get('status').value,
         idCliente: this.projectForm.get('client').value,
         idCiudad: this.projectForm.get('city').value,
@@ -215,7 +225,7 @@ export class EditProjectComponent implements OnInit {
   cleanForm() {
     this.projectForm.get('client').setValue(0);
     this.projectForm.get('contractNumber').setValue('');
-    this.projectForm.get('projectName').setValue('');
+    this.projectForm.get('codeProject').setValue('');
     this.projectForm.get('city').setValue(0);
     this.projectForm.get('team').setValue(0);
     this.projectForm.get('status').setValue(0);
@@ -302,7 +312,24 @@ export class EditProjectComponent implements OnInit {
     this.deliverablesMap.set(stageId, deliverableArray);
   }
 
-  getAllClients(){
+  getAllContracts() {
+    let contractDefault = {
+      id: 0
+    }
+    this.contractList = new Array();
+    this.contractList.push(contractDefault);
+    this.contractService.getAllContracts().subscribe(
+      response => {
+        let resJson: any = response.json();
+        this.contractList = resJson.contractList;
+      },
+      error => {
+        console.log('Error al cargar lista de contratos');
+      }
+    );
+  }
+
+  getAllClients() {
     let clientDefault = {
       id: 0
     }

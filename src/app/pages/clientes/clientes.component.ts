@@ -61,14 +61,6 @@ export class ClientesComponent implements OnInit {
     modalRef.componentInstance.content = content;
   }
 
-  cleanForm() {
-    this.clientForm.get('identification').setValue('');
-    this.clientForm.get('clientName').setValue('');
-    this.clientForm.get('addressClient').setValue('');
-    this.clientForm.get('clientPhone').setValue('');
-    this.clientForm.get('contact').setValue('');
-  }
-
   selectClient(clientId:number) {
     this.cleanForm();
     this.clicked1 = false;
@@ -77,6 +69,16 @@ export class ClientesComponent implements OnInit {
       if (client.id == clientId)
         this.clientSelected = client;
     });
+  }
+
+  cleanForm() {
+    this.clientForm.get('identification').setValue('');
+    this.clientForm.get('clientName').setValue('');
+    this.clientForm.get('addressClient').setValue('');
+    this.clientForm.get('clientPhone').setValue('');
+    this.clientForm.get('contact').setValue('');
+    this.clicked1 = false;
+    this.clicked2 = false;
   }
 
   editClient() {

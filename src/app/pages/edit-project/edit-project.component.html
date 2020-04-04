@@ -24,12 +24,12 @@
               </div>
               <div class=" col-md-6 pr-md-1">
                 <div class=" form-group">
-                  <label> NOMBRE DE CONTRATO </label>
+                  <label> CÓDIGO DE PROYECTO </label>
                   <input
                     class=" form-control"
-                    placeholder="Nombre proyecto"
+                    placeholder="Código de proyecto"
                     type="text"
-                    formControlName="projectName"
+                    formControlName="codeProject"
                   />
                 </div>
               </div>
@@ -38,12 +38,16 @@
               <div class=" col-md-3 pr-md-1">
                 <div class=" form-group">
                   <label> CONTRATO N° </label>
-                  <input
-                    class=" form-control"
-                    placeholder="Numero de contrato"
-                    type="text"
-                    formControlName="contractNumber"
-                  />
+                  <select class=" form-control font-color" formControlName="contractNumber">
+                    <option value="0" selected>Seleccione...</option>
+                    <option 
+                      *ngFor="let contract of contractList" 
+                      [selected]="(projectSelected.contrato && contract.id === projectSelected.contrato.id) || contract.id === 0"
+                      [value]="contract.id"
+                    >
+                      {{contract.numeroContrato}}
+                    </option>
+                  </select>
                 </div>
               </div>
               <div class=" col-md-2 pr-md-1">

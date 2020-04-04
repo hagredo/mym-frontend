@@ -1,67 +1,30 @@
 <div class=" content">
   <div class=" row">
-    <div class=" col-md-12">
+    <div class="col-md-10 offset-1">
       <div class=" card">
-        <div class=" card-header"><h4 class=" title">GUARDAR CLIENTE</h4></div>
+        <div class=" card-header"><h4 class=" title">GUARDAR CONTRATO</h4></div>
         <div class=" card-body">
-          <form [formGroup]="clientForm">
+          <form [formGroup]="contractForm">
             <div class=" row">
               <div class=" col-md-3 pr-md-1">
                 <div class=" form-group">
-                  <label> IDENTIFICACIÓN </label>
+                  <label> NUMERO DE CONTRATO </label>
                   <input
                     class=" form-control"
-                    placeholder="Identificación cliente"
-                    type="number"
-                    formControlName="identification"
-                  />
-                </div>
-              </div>
-            </div>
-            <div class=" row">
-              <div class=" col-md-5 pr-md-1">
-                <div class=" form-group">
-                  <label> NOMBRE </label>
-                  <input
-                    class=" form-control"
-                    placeholder="Nombre cliente"
+                    placeholder="Número de contrato"
                     type="text"
-                    formControlName="clientName"
+                    formControlName="contractNumber"
                   />
                 </div>
               </div>
               <div class=" col-md-5 pr-md-1">
                 <div class=" form-group">
-                  <label> DIRECCIÓN </label>
+                  <label> NOMBRE DEL CONTRATO </label>
                   <input
                     class=" form-control"
-                    placeholder="direccion cliente"
+                    placeholder="Nombre del contrato"
                     type="text"
-                    formControlName="addressClient"
-                  />
-                </div>
-              </div>
-            </div>
-            <div class=" row">
-              <div class=" col-md-5 pr-md-1">
-                <div class=" form-group">
-                  <label> TELÉFONO </label>
-                  <input
-                    class=" form-control"
-                    placeholder="Telefono cliente"
-                    type="number"
-                    formControlName="clientPhone"
-                  />
-                </div>
-              </div>
-              <div class=" col-md-5 pr-md-1">
-                <div class=" form-group">
-                  <label> CONTACTO </label>
-                  <input
-                    class=" form-control"
-                    placeholder="contacto directo"
-                    type="text"
-                    formControlName="contact"
+                    formControlName="contractName"
                   />
                 </div>
               </div>
@@ -73,8 +36,8 @@
             <div class="col-md-2 pr-md-1">
               <button 
                 class=" btn btn-fill btn-danger" 
-                (click)="saveClient()" 
-                [disabled]="!clientForm.valid"
+                (click)="saveContract()" 
+                [disabled]="!contractForm.valid"
               >
                 Guardar
               </button>
@@ -94,20 +57,20 @@
   </div>
 
   <div class=" row">
-    <div class=" col-12">
+    <div class="col-md-10 offset-1">
       <div class=" card">
 
         <div class=" card-header">
           <div class=" row">
             <div class=" col-sm-6 text-left">
-              <h4 class=" card-title">{{ clientSelected.nombre }}</h4>
+              <h4 class=" card-title">{{ contractSelected.nombre | truncate: 50 }}</h4>
             </div>
             <div class=" col-sm-6">
               <div
                 class=" btn-group btn-group-toggle float-right"
                 data-toggle="buttons"
               >
-                <label class=" btn btn-sm btn-danger btn-simple" (click)="editClient();clicked1=true;clicked2=false" [ngClass]="{'active':clicked1===true}">
+                <label class=" btn btn-sm btn-danger btn-simple" (click)="editContract();clicked1=true;clicked2=false" [ngClass]="{'active':clicked1===true}">
                   <input
                     class=" d-none d-sm-none"
                     name="options"
@@ -143,25 +106,19 @@
             <table class=" table tablesorter" id="">
               <thead class=" text-primary">
                 <tr>
-                  <th>Identificación</th>
-                  <th>Nombre</th>
-                  <th>Dirección</th>
-                  <th class=" text-center">Teléfono</th>
-                  <th>Contacto</th>
+                  <th>Numero contrato</th>
+                  <th class=" text-center">Nombre contrato</th>
                 </tr>
               </thead>
               <tbody>
                 <tr 
-                  *ngFor="let client of clientList; let i = index" 
-                  [ngClass]="{resaltado: client.id == clientSelected.id}" 
+                  *ngFor="let contract of contractList; let i = index" 
+                  [ngClass]="{resaltado: contract.id == contractSelected.id}" 
                   class="cursor"
-                  (click)="selectClient(client.id)"
+                  (click)="selectContract(contract.id)"
                 >
-                  <td>{{ client.id }}</td>
-                  <td>{{ client.nombre }}</td>
-                  <td>{{ client.direccion }}</td>
-                  <td class=" text-center">{{ client.telefono }}</td>
-                  <td>{{ client.contacto }}</td>
+                  <td>{{ contract.numeroContrato}}</td>
+                  <td class=" text-center">{{ contract.nombre | truncate: 70 }}</td>
                 </tr>
               </tbody>
             </table>
