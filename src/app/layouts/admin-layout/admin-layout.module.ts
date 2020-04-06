@@ -84,6 +84,7 @@ import { GenerateAlertService } from 'src/app/services/generateAlerts/generate-a
     ProjectService,
     UploadfileService,
     GenerateAlertService,
+    ContractService
   ]
 })
 export class AdminLayoutModule {}
