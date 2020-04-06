@@ -82,6 +82,8 @@ import { GenerateAlertService } from 'src/app/services/generateAlerts/generate-a
     PaymentMethodService,
     DeliverableService,
     ProjectService,
+    UploadfileService,
+    GenerateAlertService,
   ]
 })
 export class AdminLayoutModule {}
