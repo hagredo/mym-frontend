@@ -97,7 +97,6 @@ export class TeamsComponent implements OnInit {
           this.userLeader = user;
         }
       });
-      console.log(JSON.stringify(this.userListSelected));
     });
   }
 
@@ -159,7 +158,7 @@ export class TeamsComponent implements OnInit {
         this.teamSelected = this.teamList[0];
       },
       error => {
-        console.log('Error al cargar lista de equipos');
+        this.openModal('Error: ' + 'Error al cargar lista de equipos');
       }
     );
   }
@@ -176,7 +175,7 @@ export class TeamsComponent implements OnInit {
         this.userList = resJson.userList;
       },
       error => {
-        console.log('Error al cargar lista de usuarios');
+        this.openModal('Error: ' + 'Error al cargar lista de integrantes');
       }
     );
   }

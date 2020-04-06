@@ -3,6 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ContractService } from 'src/app/services/contract/contract.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgbdModalContentComponent } from 'src/app/components/ngbd-modal-content/ngbd-modal-content.component';
+import { ProjectService } from 'src/app/services/projects/project.service';
 
 @Component({
   selector: 'app-contracts',
@@ -17,13 +18,20 @@ export class ContractsComponent implements OnInit {
   public contractList : any;
   public contractSelected: any;
   public isNewContract: boolean;
+  public projectListSelected: Array<any>;
+  public projectListToSend : Array<any>;
+  public projectIdList : Array<number>;
 
   constructor(
     private contractService : ContractService,
+    private projectService : ProjectService,
     private modalService: NgbModal
   ) {
+    this.isNewContract = true;
     this.contractSelected = {};
-    this,this.isNewContract = true;
+    this.projectListSelected = new Array<any>();
+    this.projectListToSend = new Array<any>();
+    this.projectIdList = new Array<number>();
     this.contractForm = new FormGroup({
       contractNumber: new FormControl('', Validators.required),
       contractName: new FormControl('', Validators.required)
@@ -37,7 +45,7 @@ export class ContractsComponent implements OnInit {
   saveContract() {
     let body = this.buildContractBody();
     if (!this.isNewContract && this.contractSelected && this.contractSelected.id > 0) {
-      body.id = this.contractSelected.id
+      body.contract.id = this.contractSelected.id
     }
     this.contractService.saveContract(body).subscribe(
       response => {
@@ -53,8 +61,11 @@ export class ContractsComponent implements OnInit {
 
   buildContractBody():any {
     let body = {
-      numeroContrato: this.contractForm.get('contractNumber').value,
-      nombre: this.contractForm.get('contractName').value
+      contract: {
+        numeroContrato: this.contractForm.get('contractNumber').value,
+        nombre: this.contractForm.get('contractName').value
+      },
+      projectWeightList: this.projectListToSend
     }
     return body;
   }
@@ -75,20 +86,56 @@ export class ContractsComponent implements OnInit {
     });
   }
 
+  editContract() {
+    this.contractForm.get('contractNumber').setValue(this.contractSelected.numeroContrato);
+    this.contractForm.get('contractName').setValue(this.contractSelected.nombre);
+    this.isNewContract = false;
+    this.projectService.getProjectsByContract(this.contractSelected.id).subscribe(
+      response => {
+        this.projectListSelected = response.json().projectList;
+        this.projectListSelected.forEach(project => {
+          if (project.estado === 'C') {
+            project.estado = 'CREADO';
+          } else if (project.estado === 'E') {
+            project.estado = 'EN EJECUCIÓN';
+          } else if (project.estado === 'F') {
+            project.estado = 'FINALIZADO';
+          }
+          this.onWeigthChange(project.id, project.peso);
+        });
+      }
+    );
+  }
+  
+  onWeigthChange(projectId:number, peso:number) {
+    let projectWeight = {
+      idProject: projectId,
+      weight: peso
+    }
+    if(!this.projectIdList.includes(projectId)) {
+      this.projectIdList.push(projectId);
+      this.projectListToSend.push(projectWeight);
+    } else {
+      for (let index = 0; index < this.projectListToSend.length; index++) {
+        const project = this.projectListToSend[index];
+        if (project.idProject == projectId) {
+          this.projectListToSend[index] = projectWeight;
+        }
+      }
+    }
+  }
+
   cleanForm() {
     this.contractForm.get('contractNumber').setValue('');
     this.contractForm.get('contractName').setValue('');
     this.isNewContract = true;
     this.clicked1 = false;
     this.clicked2 = false;
+    this.projectListSelected = new Array<any>();
+    this.projectListToSend = new Array<any>();
+    this.projectIdList = new Array<number>();
   }
 
-  editContract() {
-    this.isNewContract = false;
-    this.contractForm.get('contractNumber').setValue(this.contractSelected.numeroContrato);
-    this.contractForm.get('contractName').setValue(this.contractSelected.nombre);
-  }
-  
   getAllContracts(){
     let contractDefault = {
       id: 0
@@ -102,7 +149,7 @@ export class ContractsComponent implements OnInit {
         this.contractSelected = this.contractList[0];
       },
       error => {
-        console.log('Error al cargar lista de contratos');
+        this.openModal('Error: ' + 'Error al cargar lista de contratos');
       }
     );
   }

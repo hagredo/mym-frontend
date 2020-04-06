@@ -29,6 +29,14 @@ export class ProjectService {
     return this.http.get(this.url, this.options);
   }
   
+  getProjectsByContract(contractId) : Observable<Response> {
+    this.options = this.httpConfig.getOptions();
+    this.varGet = new Array<string>();
+    this.varGet.push(contractId);
+    this.url = this.httpConfig.getUrl("getProjectsByContract", this.varGet);
+    return this.http.get(this.url, this.options);
+  }
+  
   getProject() {
     return this.project;
   }
