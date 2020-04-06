@@ -23,10 +23,42 @@
     <ul class="list-group">
       <li class="list-group-item deliv-background" *ngFor="let deliverable of deliverablesListSelected">
         <div class="row">
-          <div class="col-md-11">{{deliverable.nombre}}</div>
+          <div class="col-md-10">{{deliverable.nombre}}</div>
+          <div class="col-md-1 pr-md-1">
+            <div class="form-group">
+              <i class="tim-icons icon-single-copy-04 cursor" data-toggle="modal" for="Cargar"></i>
+              <input type="file" class="form-control-file" id="Cargar" (change)="selectFile($event)">
+            </div>
+          </div>
           <div class="col-md-1 cursor" (click)="removeDeliverable(deliverable.id)"><i class=" tim-icons icon-simple-remove"></i></div>
         </div>
       </li>
     </ul>
   </div>
 </form>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Cargar Archivo</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" th:action="saveFile" enctype="multipart/form-data" class="container">
+          <div class="form-group">
+            <label class="custom-file">
+              <input type="file" class="form-control-file" id="Cargar" (change)="selectFile($event)">
+            </label>
+          </div>
+          <button type="submit">Subir</button>
+         </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary"  (click)="upload()">Cargar</button>
+      </div>
+    </div>
+  </div>
+</div>
