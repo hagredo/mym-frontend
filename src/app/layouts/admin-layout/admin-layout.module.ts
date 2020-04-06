@@ -34,6 +34,8 @@ import { ProjectService } from 'src/app/services/projects/project.service';
 import { TruncatePipe } from 'src/app/pipes/truncate.pipe';
 import { TeamsComponent } from 'src/app/pages/teams/teams.component';
 import { PaymentMethodsComponent } from 'src/app/pages/payment-methods/payment-methods.component';
+import { ContractService } from 'src/app/services/contract/contract.service';
+import { ContractsComponent } from 'src/app/pages/contracts/contracts.component';
 import { UploadfileService } from 'src/app/services/uploadfiles/uploadfile.service';
 import { GenerateAlertService } from 'src/app/services/generateAlerts/generate-alert.service';
 
@@ -63,6 +65,7 @@ import { GenerateAlertService } from 'src/app/services/generateAlerts/generate-a
     BusinessCardComponent, 
     TeamsComponent,
     PaymentMethodsComponent, 
+    ContractsComponent, 
     TruncatePipe
   ],
   entryComponents: [
@@ -79,8 +82,6 @@ import { GenerateAlertService } from 'src/app/services/generateAlerts/generate-a
     PaymentMethodService,
     DeliverableService,
     ProjectService,
-    UploadfileService,
-    GenerateAlertService,
   ]
 })
 export class AdminLayoutModule {}
