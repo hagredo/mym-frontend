@@ -36,6 +36,8 @@ import { TeamsComponent } from 'src/app/pages/teams/teams.component';
 import { PaymentMethodsComponent } from 'src/app/pages/payment-methods/payment-methods.component';
 import { ContractService } from 'src/app/services/contract/contract.service';
 import { ContractsComponent } from 'src/app/pages/contracts/contracts.component';
+import { UploadfileService } from 'src/app/services/uploadfiles/uploadfile.service';
+import { GenerateAlertService } from 'src/app/services/generateAlerts/generate-alert.service';
 
 @NgModule({
   imports: [
@@ -80,7 +82,9 @@ import { ContractsComponent } from 'src/app/pages/contracts/contracts.component'
     PaymentMethodService,
     DeliverableService,
     ProjectService,
-    ContractService,
+    UploadfileService,
+    GenerateAlertService,
+    ContractService
   ]
 })
 export class AdminLayoutModule {}
