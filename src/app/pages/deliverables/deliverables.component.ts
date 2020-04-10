@@ -23,6 +23,7 @@ export class DeliverablesComponent implements OnInit {
   public deliverableForm: FormGroup;
   public deliverablesList : Array<any>;
   public deliverablesListSelected : Array<any>;
+  public percent : any;
   selectedFiles: FileList;
   currentFileUpload: File;
 
@@ -46,6 +47,9 @@ export class DeliverablesComponent implements OnInit {
           this.addDeliverable(deliverableId);
         });
       }, 100);
+    setTimeout(() =>{
+      this.percent = 100/this.deliverablesListSelected.length;
+    }, 100);
   }
 
   onDeliverableSelection() {

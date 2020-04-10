@@ -16,6 +16,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   mobile_menu_visible: any = 0;
   private toggleButton: any;
   private sidebarVisible: boolean;
+  private alertsList : any;
 
   public isCollapsed = true;
 
@@ -55,7 +56,17 @@ export class NavbarComponent implements OnInit, OnDestroy {
         this.mobile_menu_visible = 0;
       }
     });
+
+    //this.getAllAlerts();
   }
+
+  /*getAllAlerts(){
+    this.showAlert.getAllAlerts().subscribe(response =>{
+      let resJson: any = response.json();
+      this.alertsList = resJson.alertsList;
+      console.log(JSON.stringify(this.alertsList));
+    });
+  }*/
 
   collapse() {
     this.isCollapsed = !this.isCollapsed;
