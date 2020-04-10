@@ -101,10 +101,10 @@ export class DeliverablesComponent implements OnInit {
     });
   }
 
-  selectFile(event) {
+  selectFile(event, nombre:string) {
     this.selectedFiles = event.target.files;
     let body = {
-      mensaje: 'El usuario hagredo ha cargado el documento para ',
+      mensaje: 'El usuario hagredo ha cargado el documento para '+ nombre,
       timestampAlerta: new Date,
       idConfig: 1
     }

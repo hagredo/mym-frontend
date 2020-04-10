@@ -4,6 +4,8 @@ import { Location } from "@angular/common";
 import { Router } from "@angular/router";
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { AuthGuardService } from 'src/app/services/auth/auth-guard.service';
+import { ContractService } from 'src/app/services/contract/contract.service';
+import { ShowAlertService } from 'src/app/services/showAlerts/show-alert.service';
 
 @Component({
   selector: "app-navbar",
@@ -27,7 +29,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
     private element: ElementRef,
     private router: Router,
     private modalService: NgbModal,
-    private authService: AuthGuardService
+    private authService: AuthGuardService,
+    private showAlert: ShowAlertService
   ) {
     this.location = location;
     this.sidebarVisible = false;
@@ -44,6 +47,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
      }
    };
   ngOnInit() {
+    this.getAllAlerts();
     window.addEventListener("resize", this.updateColor);
     this.listTitles = ROUTES.filter(listTitle => listTitle);
     const navbar: HTMLElement = this.element.nativeElement;
@@ -56,17 +60,14 @@ export class NavbarComponent implements OnInit, OnDestroy {
         this.mobile_menu_visible = 0;
       }
     });
-
-    //this.getAllAlerts();
   }
 
-  /*getAllAlerts(){
+  getAllAlerts(){
     this.showAlert.getAllAlerts().subscribe(response =>{
       let resJson: any = response.json();
       this.alertsList = resJson.alertsList;
-      console.log(JSON.stringify(this.alertsList));
     });
-  }*/
+  }
 
   collapse() {
     this.isCollapsed = !this.isCollapsed;

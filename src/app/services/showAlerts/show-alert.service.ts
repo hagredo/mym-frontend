@@ -15,6 +15,6 @@ export class ShowAlertService {
   getAllAlerts() : Observable<Response>{
     this.options = this.httpConfig.getOptions();
     this.url = this.httpConfig.getUrl("getAllAlerts");
-    return this.http.post(this.url, this.options);
+    return this.http.get(this.url, this.options);
   }
 }

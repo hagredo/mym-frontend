@@ -37,29 +37,9 @@
             <p class=" d-lg-none">Notifications</p>
           </a>
           <ul class=" dropdown-menu-right dropdown-navbar" ngbDropdownMenu>
-            <li class=" nav-link">
+            <li  *ngFor="let alert of alertsList" class=" nav-link">
               <a class=" nav-item" href="javascript:void(0)" ngbDropdownItem>
-               
-              </a>
-            </li>
-            <li class=" nav-link">
-              <a class=" nav-item" href="javascript:void(0)" ngbDropdownItem>
-                
-              </a>
-            </li>
-            <li class=" nav-link">
-              <a class=" nav-item" href="javascript:void(0)" ngbDropdownItem>
-                
-              </a>
-            </li>
-            <li class=" nav-link">
-              <a class=" nav-item" href="javascript:void(0)" ngbDropdownItem>
-                
-              </a>
-            </li>
-            <li class=" nav-link">
-              <a class=" nav-item" href="javascript:void(0)" ngbDropdownItem>
-                
+               {{alert.mensaje}}
               </a>
             </li>
           </ul>

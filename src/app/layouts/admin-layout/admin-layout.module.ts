@@ -38,7 +38,6 @@ import { ContractService } from 'src/app/services/contract/contract.service';
 import { ContractsComponent } from 'src/app/pages/contracts/contracts.component';
 import { UploadfileService } from 'src/app/services/uploadfiles/uploadfile.service';
 import { GenerateAlertService } from 'src/app/services/generateAlerts/generate-alert.service';
-import { ShowAlertService } from 'src/app/services/showAlerts/show-alert.service';
 
 @NgModule({
   imports: [
@@ -85,8 +84,7 @@ import { ShowAlertService } from 'src/app/services/showAlerts/show-alert.service
     ProjectService,
     UploadfileService,
     GenerateAlertService,
-    ContractService,
-    ShowAlertService
+    ContractService
   ]
 })
 export class AdminLayoutModule {}
