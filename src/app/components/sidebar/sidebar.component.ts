@@ -1,83 +1,68 @@
 import { Component, OnInit } from "@angular/core";
+import { MenuService } from 'src/app/services/menu/menu.service';
+import { AuthGuardService } from 'src/app/services/auth/auth-guard.service';
 
 declare interface RouteInfo {
+  id: number,
   path: string;
   title: string;
-  rtlTitle: string;
   icon: string;
-  class: string;
 }
-export const ROUTES: RouteInfo[] = [
+export let ROUTES: RouteInfo[] = [
   {
+    id: 1,
     path: "/dashboard",
     title: "Dashboard",
-    rtlTitle: "لوحة القيادة",
-    icon: "icon-chart-pie-36",
-    class: ""
+    icon: "icon-chart-pie-36"
   },
   {
+    id: 2,
     path: "/contracts",
     title: "Contratos",
-    rtlTitle: "لوحة القيادة",
-    icon: "icon-notes",
-    class: ""
+    icon: "icon-notes"
   },
   {
+    id: 3,
     path: "/clients",
     title: "Clientes",
-    rtlTitle: "الرموز",
-    icon: "icon-satisfied",
-    class: ""
+    icon: "icon-satisfied"
   },
   {
+    id: 4,
     path: "/stages",
     title: "Etapas",
-    rtlTitle: "قائمة الجدول",
-    icon: "icon-puzzle-10",
-    class: ""
+    icon: "icon-puzzle-10"
   },
   {
+    id: 5,
     path: "/teams",
     title: "Equipos",
-    rtlTitle: "خرائط",
-    icon: "icon-single-02",
-    class: "" 
+    icon: "icon-single-02"
   },
   {
+    id: 6,
     path: "/payment-methods",
     title: "Formas de pago",
-    rtlTitle: "ملف تعريفي للمستخدم",
-    icon: "icon-coins",
-    class: ""
+    icon: "icon-coins"
   },
   {
+    id: 7,
     path: "/notifications",
     title: "Notificaciones",
-    rtlTitle: "إخطارات",
-    icon: "icon-bell-55",
-    class: ""
+    icon: "icon-bell-55"
   },
   {
+    id: 8,
     path: "/icons",
     title: "Informes",
-    rtlTitle: "ملف تعريفي للمستخدم",
-    icon: "icon-paper",
-    class: ""
+    icon: "icon-paper"
   },
   {
+    id: 9,
     path: "/typography",
     title: "Archivos",
-    rtlTitle: "طباعة",
-    icon: "icon-single-copy-04",
-    class: ""
-  }/*,
-  {
-    path: "/rtl",
-    title: "RTL Support",
-    rtlTitle: "ار تي ال",
-    icon: "icon-world",
-    class: ""
-  }*/
+    icon: "icon-single-copy-04"
+  }
 ];
 
 @Component({
@@ -86,17 +71,37 @@ export const ROUTES: RouteInfo[] = [
   styleUrls: ["./sidebar.component.css"]
 })
 export class SidebarComponent implements OnInit {
+
   menuItems: any[];
 
-  constructor() {}
+  constructor(
+    private menuService: MenuService,
+    private authService: AuthGuardService
+  ) {}
 
   ngOnInit() {
-    this.menuItems = ROUTES.filter(menuItem => menuItem);
+    this.getMenuByRole();
   }
+
+  getMenuByRole() {
+    console.log(this.authService.userRole);
+    this.menuService.getMenuByRole(this.authService.userRole).subscribe(
+      response => {
+        let resJson: any = response.json();
+        ROUTES = resJson.menuList;
+        this.menuItems = ROUTES.filter(menuItem => menuItem);
+      },
+      error => {
+        console.log('Error al cargar el menu');
+      }
+    );
+  }
+
   isMobileMenu() {
     if (window.innerWidth > 991) {
       return false;
     }
     return true;
   }
+
 }

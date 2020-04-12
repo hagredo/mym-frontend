@@ -11,10 +11,13 @@ import { Router } from '@angular/router';
 export class UserComponent implements OnInit {
 
   public userForm: FormGroup;
+  public userRole: number;
   
-  constructor(private userService: UserService, 
+  constructor(
+    private userService: UserService, 
     private authService: AuthGuardService,
-    private router: Router) {
+    private router: Router
+  ) {
     this.userForm = new FormGroup({
       userName: new FormControl('', Validators.required),
       password: new FormControl('', Validators.required),
@@ -30,7 +33,8 @@ export class UserComponent implements OnInit {
     this.userService.validUser(userName, passwd).subscribe(
       response => {
         let resJson: any = response.json();
-        this.authService.setToken(resJson.responseMessage);
+        this.authService.setToken(resJson.user.token);
+        this.authService.userRole = resJson.user.idRol;
         this.router.navigate(['/dashboard']);
       },
       error => {

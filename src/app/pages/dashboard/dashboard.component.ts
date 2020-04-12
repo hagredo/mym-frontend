@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import Chart from 'chart.js';
 import { Router } from '@angular/router';
 import { ProjectService } from 'src/app/services/projects/project.service';
+import { AuthGuardService } from 'src/app/services/auth/auth-guard.service';
 
 @Component({
   selector: "app-dashboard",
@@ -21,10 +22,12 @@ export class DashboardComponent implements OnInit {
   public tituloProyecto: string = '';
   public projectSelected: any;
   public grafica: any = 0;
+  public idRole: number;
 
   constructor(
     private router: Router,
-    private projectService : ProjectService
+    private projectService : ProjectService,
+    private authService: AuthGuardService
   ) {
       this.projectSelected = {};
   }
@@ -58,6 +61,10 @@ export class DashboardComponent implements OnInit {
     this.updateOptions();
   }
 
+  validateRole() {
+    this.idRole = this.authService.userRole;
+  }
+
   getAllProjects(){
     this.projectService.getAllProjects().subscribe(
       response => {
@@ -83,6 +90,7 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.validateRole();
     this.getAllProjects();
     var gradientChartOptionsConfigurationWithTooltipBlue: any = {
       maintainAspectRatio: false,

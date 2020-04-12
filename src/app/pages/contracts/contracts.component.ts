@@ -4,6 +4,7 @@ import { ContractService } from 'src/app/services/contract/contract.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgbdModalContentComponent } from 'src/app/components/ngbd-modal-content/ngbd-modal-content.component';
 import { ProjectService } from 'src/app/services/projects/project.service';
+import { AuthGuardService } from 'src/app/services/auth/auth-guard.service';
 
 @Component({
   selector: 'app-contracts',
@@ -21,11 +22,13 @@ export class ContractsComponent implements OnInit {
   public projectListSelected: Array<any>;
   public projectListToSend : Array<any>;
   public projectIdList : Array<number>;
+  public idRole: number;
 
   constructor(
     private contractService : ContractService,
     private projectService : ProjectService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private authService: AuthGuardService
   ) {
     this.isNewContract = true;
     this.contractSelected = {};
@@ -39,9 +42,14 @@ export class ContractsComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.validateRole();
     this.getAllContracts();
   }
   
+  validateRole() {
+    this.idRole = this.authService.userRole;
+  }
+
   saveContract() {
     let body = this.buildContractBody();
     if (!this.isNewContract && this.contractSelected && this.contractSelected.id > 0) {

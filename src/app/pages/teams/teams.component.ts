@@ -4,6 +4,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { UserService } from 'src/app/services/user/user.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgbdModalContentComponent } from 'src/app/components/ngbd-modal-content/ngbd-modal-content.component';
+import { AuthGuardService } from 'src/app/services/auth/auth-guard.service';
 
 @Component({
   selector: 'app-teams',
@@ -22,10 +23,12 @@ export class TeamsComponent implements OnInit {
   public userSelected: any;
   public userLeader: any;
   public isNewTeam: boolean;
+  public idRole: number;
 
   constructor(
     private teamsService : TeamsService,
     private userService : UserService,
+    private authService: AuthGuardService,
     private modalService: NgbModal
   ) {
     this.userListSelected = new Array<any>();
@@ -40,8 +43,13 @@ export class TeamsComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.validateRole();
     this.getAllTeams();
     this.getAllUsers();
+  }
+
+  validateRole() {
+    this.idRole = this.authService.userRole;
   }
 
   saveTeam() {
@@ -111,10 +119,12 @@ export class TeamsComponent implements OnInit {
   }
 
   selectLeader(userId:number) {
-    this.userList.forEach(user => {
-      if (user.id == userId)
-        this.userLeader = user;
-    });
+    if (this.idRole == 1) {
+      this.userList.forEach(user => {
+        if (user.id == userId)
+          this.userLeader = user;
+      });
+    }
   }
 
   addUser() {

@@ -3,6 +3,7 @@ import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { ClientsService } from 'src/app/services/clients/clients.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgbdModalContentComponent } from 'src/app/components/ngbd-modal-content/ngbd-modal-content.component';
+import { AuthGuardService } from 'src/app/services/auth/auth-guard.service';
 
 @Component({
   selector: 'app-clientes',
@@ -16,9 +17,11 @@ export class ClientesComponent implements OnInit {
   public clicked2: boolean = false;
   public clientList : any;
   public clientSelected: any;
+  public idRole: number;
 
   constructor(
     private clientsService : ClientsService,
+    private authService: AuthGuardService,
     private modalService: NgbModal
   ) {
     this.clientSelected = {};
@@ -32,7 +35,12 @@ export class ClientesComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.validateRole();
     this.getAllClients();
+  }
+
+  validateRole() {
+    this.idRole = this.authService.userRole;
   }
 
   saveClient() {

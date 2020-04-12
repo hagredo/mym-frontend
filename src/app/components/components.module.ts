@@ -9,11 +9,12 @@ import { SidebarComponent } from "./sidebar/sidebar.component";
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { ShowAlertService } from '../services/showAlerts/show-alert.service';
+import { MenuService } from '../services/menu/menu.service';
 
 @NgModule({
   imports: [CommonModule, RouterModule, NgbModule, HttpClientModule, HttpModule],
   declarations: [FooterComponent, NavbarComponent, SidebarComponent],
   exports: [FooterComponent, NavbarComponent, SidebarComponent],
-  providers: [ShowAlertService]
+  providers: [ShowAlertService, MenuService]
 })
 export class ComponentsModule {}
