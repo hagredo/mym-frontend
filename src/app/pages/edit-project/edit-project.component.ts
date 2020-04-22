@@ -36,7 +36,7 @@ export class EditProjectComponent implements OnInit {
   public stagesListSelectedMap : Map<number, string>;
   public stagesListToSend : Array<any>;
   public stagesIdList : Array<number>;
-  public deliverablesMap : Map<number, Array<number>>;
+  public deliverablesMap : Map<number, Array<any>>;
 
   constructor(
     private router: Router,
@@ -55,7 +55,7 @@ export class EditProjectComponent implements OnInit {
     this.stagesListToSend = new Array<any>();
     this.stagesIdList = new Array<number>();
     this.stagesListSelectedMap = new Map<number, string>();
-    this.deliverablesMap = new Map<number, Array<number>>();
+    this.deliverablesMap = new Map<number, Array<any>>();
     this.projectForm = new FormGroup({
       city: new FormControl('', Validators.required),
       client: new FormControl('', Validators.required),
@@ -135,7 +135,11 @@ export class EditProjectComponent implements OnInit {
     this.deliverableService.getDeliverablesByProject(this.projectSelected.id).subscribe(response => {
       let deliverablesProject = response.json().deliverableStageList;
       deliverablesProject.forEach(deliberableStage => {
-        this.processDeliverableSelection(deliberableStage.id.idEntregable, deliberableStage.id.idEtapa);
+        let deliverableTemp = {
+          id: deliberableStage.id.idEntregable,
+          weigth: deliberableStage.peso
+        }
+        this.processDeliverableSelection(deliberableStage.id.idEtapa, deliverableTemp);
       });
     });
   }
@@ -203,8 +207,11 @@ export class EditProjectComponent implements OnInit {
     this.deliverablesMap.forEach((deliverableArray: Array<any>, stageId: number) => {
       deliverableArray.forEach(deliverable => {
         let deliverableObject = {
-          idEtapa: stageId,
-          idEntregable: deliverable
+          id: {
+            idEtapa: stageId,
+            idEntregable: deliverable.id
+          },
+          peso: deliverable.weigth
         }
         deliverableStageList.push(deliverableObject);
       });
@@ -241,7 +248,7 @@ export class EditProjectComponent implements OnInit {
     this.stagesListSelected = new Array<any>();
     this.stagesListToSend = new Array<any>();
     this.stagesIdList = new Array<number>();
-    this.deliverablesMap = new Map<number, Array<number>>();
+    this.deliverablesMap = new Map<number, Array<any>>();
   } 
   
   changeInitDate(init:string, end:string) {
@@ -295,19 +302,30 @@ export class EditProjectComponent implements OnInit {
     }
   }
 
-  getDeliverablesByStage(stageId : number): Array<number> {
+  getDeliverablesByStage(stageId : number): Array<any> {
     return this.deliverablesMap.get(stageId);
   }
 
-  processDeliverableSelection(deliberableId : number, stageId : number) {
+  processDeliverableSelection(stageId : number, deliberable : any) {
     let deliverableArray = this.deliverablesMap.get(stageId);
+    let deliverableTemp = {
+      id: deliberable.id,
+      weigth: (deliberable) ? deliberable.weigth : 0
+    }
     if (deliverableArray) {
-      if (!deliverableArray.includes(deliberableId) && deliberableId) {
-        deliverableArray.push(deliberableId);
+      let indexArray = -1;
+      for (let index = 0; index < deliverableArray.length; index++) {
+        if (deliverableArray[index].id == deliverableTemp.id)
+          indexArray = index;
       }
-    } else if(deliberableId) {
-      deliverableArray = new Array<number>();
-      deliverableArray.push(deliberableId);
+      if (indexArray >= 0) {
+        deliverableArray.splice(indexArray, 1, deliverableTemp);
+      } else {
+        deliverableArray.push(deliverableTemp);
+      }
+    } else {
+      deliverableArray = new Array<any>();
+      deliverableArray.push(deliverableTemp);
     }
     this.deliverablesMap.set(stageId, deliverableArray);
   }

@@ -1,6 +1,6 @@
 <div>
   <app-deliverables 
-    [deliverableIds]="getDeliverablesByStage(stage.id)" 
+    [deliverables]="getDeliverablesByStage(stage.id)" 
     (deliverableSelection)="processDeliverableSelection($event, stage.id)">
   </app-deliverables>
 </div>

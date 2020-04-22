@@ -15,7 +15,7 @@
       </div>
     </div>
     <div class="col-md-1 pr-md-1">
-      <button type="button" class="btn btn-primary btn-sm" (click)="addDeliverable(); onDeliverableSelection();">+</button>
+      <button type="button" class="btn btn-primary btn-sm" (click)="addDeliverable();">+</button>
     </div>
   </div>
   <br>
@@ -24,7 +24,9 @@
       <li class="list-group-item deliv-background" *ngFor="let deliverable of deliverablesListSelected">
         <div class="row">
           <div class="col-md-8">{{deliverable.nombre}}</div>
-          <div class="col-md-2">{{percent | number : '1.0-2'}}</div>
+          <div class="col-md-2">
+            <input style="height:70%;" class=" form-control" type="number" [value]="deliverable.peso" (change)="onWeigthChange(deliverable.id, weigth.value)" #weigth>
+          </div>
           <div class="col-md-1 pr-md-1">
             <div class="form-group">
               <i class="tim-icons icon-single-copy-04 cursor" data-toggle="modal" for="Cargar"></i>

@@ -38,6 +38,7 @@ import { ContractService } from 'src/app/services/contract/contract.service';
 import { ContractsComponent } from 'src/app/pages/contracts/contracts.component';
 import { UploadfileService } from 'src/app/services/uploadfiles/uploadfile.service';
 import { GenerateAlertService } from 'src/app/services/generateAlerts/generate-alert.service';
+import { ManageComponent } from 'src/app/pages/manage/manage.component';
 
 @NgModule({
   imports: [
@@ -66,6 +67,7 @@ import { GenerateAlertService } from 'src/app/services/generateAlerts/generate-a
     TeamsComponent,
     PaymentMethodsComponent, 
     ContractsComponent, 
+    ManageComponent, 
     TruncatePipe
   ],
   entryComponents: [

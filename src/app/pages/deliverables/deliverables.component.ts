@@ -15,25 +15,29 @@ import { NgbdModalContentComponent } from 'src/app/components/ngbd-modal-content
 export class DeliverablesComponent implements OnInit {
 
   @Input() 
-  deliverableIds: Array<number>;
+  deliverables: Array<any>;
 
   @Output()
-  deliverableSelection = new EventEmitter<number>();
+  deliverableSelection = new EventEmitter<any>();
   
   public deliverableForm: FormGroup;
   public deliverablesList : Array<any>;
   public deliverablesListSelected : Array<any>;
-  public percent : any;
+  public idsListSelected: Array<number>;
   selectedFiles: FileList;
   currentFileUpload: File;
 
-  constructor(private deliverablesService : DeliverableService, private uploadService : UploadfileService, 
-    private generateAlert : GenerateAlertService, private modalService: NgbModal) {
-    
-      if (!this.deliverableIds) {
-      this.deliverableIds = new Array<number>(); 
+  constructor(
+    private deliverablesService : DeliverableService, 
+    private uploadService : UploadfileService, 
+    private generateAlert : GenerateAlertService, 
+    private modalService: NgbModal
+  ) {
+    if (!this.deliverables) {
+      this.deliverables = new Array<any>(); 
     }
     this.deliverablesListSelected = new Array<any>();
+    this.idsListSelected = new Array<any>();
     this.deliverableForm = new FormGroup({
       deliverableSelected : new FormControl('', Validators.required)
     });
@@ -41,31 +45,39 @@ export class DeliverablesComponent implements OnInit {
 
   ngOnInit() {
     this.getAllDeliverables();
-    if (this.deliverableIds)
+    if (this.deliverables)
       setTimeout(() => {
-        this.deliverableIds.forEach(deliverableId => {
-          this.addDeliverable(deliverableId);
+        this.deliverables.forEach(deliverable => {
+          this.addDeliverable(deliverable);
         });
       }, 100);
-    setTimeout(() =>{
-      this.percent = 100/this.deliverablesListSelected.length;
-    }, 100);
   }
 
-  onDeliverableSelection() {
-    this.deliverableSelection.emit(this.deliverableForm.get('deliverableSelected').value);
-  }
-
-  addDeliverable(deliverableId? : number) {
-    let deliverableSelected;
-    this.deliverablesList.forEach(deliverable => {
-      if (deliverable.id == ((deliverableId) ? deliverableId : this.deliverableForm.get('deliverableSelected').value)) {
-        deliverableSelected = deliverable;
+  addDeliverable(deliverable? : any) {
+    let deliverableSelected = {
+      id: (deliverable) ? deliverable.id : parseInt(this.deliverableForm.get('deliverableSelected').value),
+      nombre: '',
+      peso: (deliverable) ? deliverable.weigth : 0
+    };
+    this.deliverablesList.forEach(deliverableTemp => {
+      if (deliverableTemp.id == ((deliverable) ? deliverable.id : 
+          parseInt(this.deliverableForm.get('deliverableSelected').value))) {
+        deliverableSelected.nombre = deliverableTemp.nombre;
       }
     });
-    if(!this.deliverablesListSelected.includes(deliverableSelected) && deliverableSelected) {
+    if(!this.idsListSelected.includes(deliverableSelected.id) && deliverableSelected.id > 0) {
       this.deliverablesListSelected.push(deliverableSelected);
+      this.idsListSelected.push(deliverableSelected.id);
+      this.deliverableSelection.emit(deliverable);
     } 
+  }
+
+  onWeigthChange(deliverableId: number, weigth: number) {
+    let deliverable = {
+      id: deliverableId,
+      weigth: weigth
+    }
+    this.deliverableSelection.emit(deliverable);
   }
 
   removeDeliverable(deliverableId:number) {
@@ -73,6 +85,7 @@ export class DeliverablesComponent implements OnInit {
       const deliverable = this.deliverablesListSelected[index];
       if (deliverable.id == deliverableId) {
         this.deliverablesListSelected.splice(index, 1);
+        this.idsListSelected.splice(index, 1);
       }
     }
   }
@@ -93,6 +106,7 @@ export class DeliverablesComponent implements OnInit {
       }
     );
   }
+
   upload() {
     this.currentFileUpload = this.selectedFiles.item(0);
     this.uploadService.pushFileToStorage(this.currentFileUpload).subscribe(event => {
