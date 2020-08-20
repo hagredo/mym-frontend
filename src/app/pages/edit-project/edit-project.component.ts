@@ -12,6 +12,7 @@ import { ProjectService } from 'src/app/services/projects/project.service';
 import { Router } from '@angular/router';
 import { DeliverableService } from 'src/app/services/deliverables/deliverable.service';
 import { ContractService } from 'src/app/services/contract/contract.service';
+import { AuthGuardService } from 'src/app/services/auth/auth-guard.service';
 
 @Component({
   selector: 'app-edit-project',
@@ -19,6 +20,9 @@ import { ContractService } from 'src/app/services/contract/contract.service';
   styleUrls: ['./edit-project.component.scss']
 })
 export class EditProjectComponent implements OnInit {
+
+  private error: boolean = false;
+  private errorMessage: string = '';
 
   public cityList : any;
   public contractList: any;
@@ -28,6 +32,7 @@ export class EditProjectComponent implements OnInit {
   public paymentMethodList: any;
   public projectSelected: any;
   public isNotSelectedProject: boolean = true;
+  public cancelTittle: string = 'Cancelar';
 
   public projectForm: FormGroup;
   public show : boolean = false;
@@ -37,9 +42,11 @@ export class EditProjectComponent implements OnInit {
   public stagesListToSend : Array<any>;
   public stagesIdList : Array<number>;
   public deliverablesMap : Map<number, Array<any>>;
+  public idRole: number;
 
   constructor(
     private router: Router,
+    private authService: AuthGuardService,
     private clientsService : ClientsService, 
     private stageService : StageService,
     private teamsService : TeamsService,
@@ -76,6 +83,7 @@ export class EditProjectComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.validateRole();
     this.projectSelected = this.projectService.getProject();
     this.getAllContracts();
     this.getAllClients();
@@ -88,6 +96,19 @@ export class EditProjectComponent implements OnInit {
       this.fillForm();
     } else {
       this.isNotSelectedProject = true;
+    }
+  }
+
+  validateRole() {
+    this.idRole = this.authService.userRole;
+    if (this.idRole != 1) {
+      this.projectForm.get('client').disable();
+      this.projectForm.get('codeProject').disable();
+      this.projectForm.get('contractNumber').disable();
+      this.projectForm.get('city').disable();
+      this.projectForm.get('team').disable();
+      this.projectForm.get('status').disable();
+      this.cancelTittle = 'Regresar';
     }
   }
 
@@ -125,7 +146,7 @@ export class EditProjectComponent implements OnInit {
         let stageSelected = {
           id: stage.id.idEtapa,
           nombre: this.stagesListSelectedMap.get(stage.id.idEtapa),
-          peso: stage.id.peso
+          peso: stage.peso
         }
         this.stagesListSelected.push(stageSelected);
         this.onWeigthChange(stageSelected.id, stageSelected.peso);
@@ -152,20 +173,38 @@ export class EditProjectComponent implements OnInit {
   }
 
   saveProject() {
+    this.validateProjectWeigth();
     let body = this.buildProjectBody();
-    if (this.projectSelected && this.projectSelected.id > 0) {
-      body.project.id = this.projectSelected.id;
-    }
-    this.saveService.saveProject(body).subscribe(
-      response => {
-        this.openModal(response.json().responseMessage);
-        this.cleanForm();
-        this.router.navigate(['/dashboard']);
-      },
-      error => {
-        this.openModal('Error: ' + error.responseMessage);
+    if (!this.error) {
+      if (this.projectSelected && this.projectSelected.id > 0) {
+        body.project.id = this.projectSelected.id;
       }
-    );
+      this.saveService.saveProject(body).subscribe(
+        response => {
+          this.openModal(response.json().responseMessage);
+          this.cleanForm();
+          this.router.navigate(['/dashboard']);
+        },
+        error => {
+          this.openModal('Error: ' + error.responseMessage);
+        }
+      );
+    } else {
+      this.openModal(this.errorMessage);
+      this.error = false;
+      this.errorMessage = '';
+    }
+  }
+
+  validateProjectWeigth() {
+    let projectWeigth = 0;
+    this.stagesListToSend.forEach(stage => {
+      projectWeigth += parseInt(stage.peso);
+    });
+    if (projectWeigth != 100) {
+      this.error = true;
+      this.errorMessage = 'Error: Los pesos de las Entregas del proyecto deben sumar 100';
+    }
   }
 
   buildProjectBody():any {
@@ -205,7 +244,9 @@ export class EditProjectComponent implements OnInit {
   buildDeliverableStageList(): Array<any> {
     let deliverableStageList = new Array<any>();
     this.deliverablesMap.forEach((deliverableArray: Array<any>, stageId: number) => {
+      let stageWeigth = 0;
       deliverableArray.forEach(deliverable => {
+        stageWeigth += parseInt(deliverable.weigth);
         let deliverableObject = {
           id: {
             idEtapa: stageId,
@@ -215,6 +256,11 @@ export class EditProjectComponent implements OnInit {
         }
         deliverableStageList.push(deliverableObject);
       });
+      if (stageWeigth != 100) {
+        this.error = true;
+        this.errorMessage = 'Error: Los pesos de los Entregables por Entrega deben sumar 100';
+        return new Array<any>(); 
+      }
     });
     return deliverableStageList;
   }
@@ -261,24 +307,48 @@ export class EditProjectComponent implements OnInit {
       if (stage.id == this.projectForm.get('stageSelected').value)
       stageSelected = stage;
     });
-    if(!this.stagesListSelected.includes(stageSelected) && stageSelected) {
-      this.stagesListSelected.push(stageSelected);
-    }
-  }
-
-  removeStage(stagId:number) {
+    console.log(JSON.stringify(this.stagesListSelected));
+    let exists = false;
     for (let index = 0; index < this.stagesListSelected.length; index++) {
       const stage = this.stagesListSelected[index];
-      if (stage.id == stagId) {
+      if (stage.id == stageSelected.id) {
+        exists = true;
+      }
+    }
+    if(!exists && stageSelected) {
+      this.stagesListSelected.push(stageSelected);
+    }
+    console.log(JSON.stringify(this.stagesListSelected));
+  }
+
+  removeStage(stageId:number) {
+    for (let index = 0; index < this.stagesListSelected.length; index++) {
+      const stage = this.stagesListSelected[index];
+      if (stage.id == stageId) {
         this.stagesListSelected.splice(index, 1);
       }
     }
-    this.deliverablesMap.delete(stagId);
+    for (let index = 0; index < this.stagesListToSend.length; index++) {
+      const stage = this.stagesListToSend[index];
+      if (stage.id.idEtapa == stageId) {
+        this.stagesListToSend.splice(index, 1);
+      }
+    }
+    this.deliverablesMap.delete(stageId);
+    if (this.projectSelected && this.projectSelected.idCliente > 0) {
+      this.stageService.deleteStageByProject(this.projectSelected.id, stageId).subscribe(
+        response => {
+          this.openModal(response.json().responseMessage);
+        });
+    }
   }
 
   onWeigthChange(stageId:number, weigth:number) {
     let stageProject = {
-      idEtapa: stageId,
+      id: {
+        idEtapa: stageId,
+        idProyecto: null
+      },
       peso: weigth
     }
     if(!this.stagesIdList.includes(stageId)) {
@@ -287,7 +357,7 @@ export class EditProjectComponent implements OnInit {
     } else {
       for (let index = 0; index < this.stagesListToSend.length; index++) {
         const stage = this.stagesListToSend[index];
-        if (stage.idEtapa == stageId) {
+        if (stage.id.idEtapa == stageId) {
           this.stagesListToSend[index] = stageProject;
         }
       }
@@ -328,6 +398,30 @@ export class EditProjectComponent implements OnInit {
       deliverableArray.push(deliverableTemp);
     }
     this.deliverablesMap.set(stageId, deliverableArray);
+  }
+
+  deleteDeliverable(stageId : number, deliverableId : number) {
+    let deliverableArray = this.deliverablesMap.get(stageId);
+    if (deliverableArray) {
+      let indexArray = -1;
+      for (let index = 0; index < deliverableArray.length; index++) {
+        if (deliverableArray[index].id == deliverableId)
+          indexArray = index;
+      }
+      if (indexArray >= 0) {
+        deliverableArray.splice(indexArray, 1);
+        if (this.projectSelected && this.projectSelected.idCliente > 0) {
+          this.deliverableService.deleteDeliverableByProject(this.projectSelected.id, stageId, deliverableId).subscribe(
+            response => {
+              this.openModal(response.json().responseMessage);
+            });
+        }
+      }
+    }
+  }
+
+  getProjectId() {
+    return (this.projectSelected && this.projectSelected.idCliente > 0) ? this.projectSelected.id : 0
   }
 
   getAllContracts() {

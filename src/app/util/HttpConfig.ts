@@ -1,4 +1,4 @@
-import { RequestOptions, Headers } from "@angular/http";
+import { RequestOptions, Headers, ResponseContentType } from "@angular/http";
 import { environment } from "../../environments/environment";
 import { AuthGuardService } from '../services/auth/auth-guard.service';
 import { Injectable } from '@angular/core';
@@ -14,6 +14,16 @@ export class HttpConfig {
 
   getOptions(): RequestOptions {
     let headers = new Headers({ "Content-Type": "application/json", "Authorization":  this.authService.getToken()});
+    return new RequestOptions({ headers: headers });
+  }
+
+  getFileOptions(): RequestOptions {
+    let headers = new Headers({ });
+    return new RequestOptions({ headers: headers, responseType: ResponseContentType.Blob });
+  }
+
+  getMultipartOptions(): RequestOptions {
+    let headers = new Headers({ "Authorization":  this.authService.getToken() });
     return new RequestOptions({ headers: headers });
   }
 

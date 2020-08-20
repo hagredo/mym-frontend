@@ -44,7 +44,7 @@ export class DashboardComponent implements OnInit {
 
   manageProject() {
     this.projectService.setProject(this.projectSelected);
-    this.router.navigate(['/manage']);
+    this.router.navigate(['/edit-project']);
   }
 
   selectProject(projectId:number) {

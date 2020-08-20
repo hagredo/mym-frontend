@@ -28,10 +28,26 @@ export class DeliverableService {
     return this.http.get(this.url, this.options);
   }
   
+  updateDeliverableByProject(body : any) : Observable<Response>{
+    this.options = this.httpConfig.getOptions();
+    this.url = this.httpConfig.getUrl("updateDeliverableByProject");
+    return this.http.post(this.url, body, this.options);
+  }
+
   saveDeliverable(body : any) : Observable<Response>{
     this.options = this.httpConfig.getOptions();
     this.url = this.httpConfig.getUrl("saveDeliverable");
     return this.http.post(this.url, body, this.options);
+  }
+
+  deleteDeliverableByProject(projectId, stageId, deliverableId) : Observable<Response>{
+    this.options = this.httpConfig.getOptions();
+    this.varGet = new Array<string>();
+    this.varGet.push(projectId);
+    this.varGet.push(stageId);
+    this.varGet.push(deliverableId);
+    this.url = this.httpConfig.getUrl("deleteDeliverableByProject", this.varGet);
+    return this.http.get(this.url, this.options);
   }
 
 }

@@ -1,10 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, SecurityContext } from '@angular/core';
 import { DeliverableService } from 'src/app/services/deliverables/deliverable.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { UploadfileService } from 'src/app/services/uploadfiles/uploadfile.service';
-import { GenerateAlertService } from 'src/app/services/generateAlerts/generate-alert.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgbdModalContentComponent } from 'src/app/components/ngbd-modal-content/ngbd-modal-content.component';
+import { AuthGuardService } from 'src/app/services/auth/auth-guard.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 
 @Component({
@@ -15,10 +16,16 @@ import { NgbdModalContentComponent } from 'src/app/components/ngbd-modal-content
 export class DeliverablesComponent implements OnInit {
 
   @Input() 
+  projectId: number;
+  @Input() 
+  stageId: number;
+  @Input() 
   deliverables: Array<any>;
 
   @Output()
   deliverableSelection = new EventEmitter<any>();
+  @Output()
+  deleteDeliverable = new EventEmitter<any>();
   
   public deliverableForm: FormGroup;
   public deliverablesList : Array<any>;
@@ -26,12 +33,14 @@ export class DeliverablesComponent implements OnInit {
   public idsListSelected: Array<number>;
   selectedFiles: FileList;
   currentFileUpload: File;
+  public idRole: number;
 
   constructor(
     private deliverablesService : DeliverableService, 
     private uploadService : UploadfileService, 
-    private generateAlert : GenerateAlertService, 
-    private modalService: NgbModal
+    private authService: AuthGuardService,
+    private modalService: NgbModal,
+    private sanitizer: DomSanitizer
   ) {
     if (!this.deliverables) {
       this.deliverables = new Array<any>(); 
@@ -44,6 +53,7 @@ export class DeliverablesComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.validateRole();
     this.getAllDeliverables();
     if (this.deliverables)
       setTimeout(() => {
@@ -53,11 +63,15 @@ export class DeliverablesComponent implements OnInit {
       }, 100);
   }
 
+  validateRole() {
+    this.idRole = this.authService.userRole;
+  }
+
   addDeliverable(deliverable? : any) {
     let deliverableSelected = {
       id: (deliverable) ? deliverable.id : parseInt(this.deliverableForm.get('deliverableSelected').value),
       nombre: '',
-      peso: (deliverable) ? deliverable.weigth : 0
+      peso: (deliverable && deliverable.weigth) ? deliverable.weigth : 0
     };
     this.deliverablesList.forEach(deliverableTemp => {
       if (deliverableTemp.id == ((deliverable) ? deliverable.id : 
@@ -68,7 +82,7 @@ export class DeliverablesComponent implements OnInit {
     if(!this.idsListSelected.includes(deliverableSelected.id) && deliverableSelected.id > 0) {
       this.deliverablesListSelected.push(deliverableSelected);
       this.idsListSelected.push(deliverableSelected.id);
-      this.deliverableSelection.emit(deliverable);
+      this.deliverableSelection.emit((deliverable) ? deliverable : deliverableSelected);
     } 
   }
 
@@ -86,8 +100,100 @@ export class DeliverablesComponent implements OnInit {
       if (deliverable.id == deliverableId) {
         this.deliverablesListSelected.splice(index, 1);
         this.idsListSelected.splice(index, 1);
+        this.deleteDeliverable.emit(deliverableId);
       }
     }
+  }
+
+  selectFile(event, deliverableId) {
+    this.currentFileUpload = event.target.files[0];
+    if (this.currentFileUpload) {
+      this.uploadFile(deliverableId);
+    } else {
+      this.openModal('No se seleccionó ningún archivo válido!');
+    }
+  }
+  
+  uploadFile(deliverableId) {
+    let body = new FormData();
+    body.append("file", this.currentFileUpload);
+    this.uploadService.pushFileToStorage(body).subscribe(
+      response => {
+        let resJson: any = response.json();
+        if (resJson.fileId > 0) {
+          let bodyDb = {
+            id: {
+              idEtapa: this.stageId,
+              idEntregable: deliverableId,
+              idProyecto: this.projectId
+            },
+            idArchivo: resJson.fileId
+          }
+          this.deliverablesService.updateDeliverableByProject(bodyDb).subscribe(
+            res => {
+              let responseJson: any = res.json();
+              this.openModal(responseJson.responseMessage);
+            },
+            error => this.openModal('Error guardando información del archivo: ' + error.responseMessage)
+          );
+        }
+      },
+      error => this.openModal('Error cargando archivo: ' + error.responseMessage)
+    );  
+    this.currentFileUpload = undefined;
+  }
+
+  updateDeliverable(deliverableId, status) {
+    let body = {
+      id: {
+        idEtapa: this.stageId,
+        idEntregable: deliverableId,
+        idProyecto: this.projectId
+      },
+      estado: status
+    }
+    this.deliverablesService.updateDeliverableByProject(body).subscribe(
+      res => {
+        let responseJson: any = res.json();
+        this.openModal(responseJson.responseMessage);
+      },
+      error => this.openModal('Error guardando información del archivo: ' + error.responseMessage)
+    );  
+  }
+
+  downloadFile(deliverableId) {
+    let body = {
+      stageId: this.stageId,
+      deliverableId: deliverableId,
+      projectId: this.projectId
+    }
+    this.uploadService.getFileByDeliverable(body).subscribe(
+      res => {
+        let responseJson: any = res.json();
+        if (responseJson.file) {
+          let pdf:any = {};
+          pdf.name = responseJson.file.name;
+          pdf.path = responseJson.file.path;
+          let name = 'guia-articulo-academico.pdf'
+          let path = 'https://www.usergioarboleda.edu.co/wp-content/uploads/2016/01/guia-articulo-academico.pdf';
+          this.uploadService.getFileBlob(/*pdf.path*/path).subscribe(
+            res => {
+              pdf.content = res.blob();
+              let link = document.createElement("a");
+              link.href = this.sanitizer.sanitize(SecurityContext.RESOURCE_URL, 
+                this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(pdf.content)));
+              link.download = /*pdf.name*/name;
+              link.dispatchEvent(new MouseEvent("click"));
+            },
+            error => this.openModal('Error al descargar el archivo')
+          );
+        } else {
+          this.openModal('Error descargando el archivo: ' + responseJson.responseMessage)
+        }
+      },
+      error => this.openModal('Error descargando el archivo: ' + error.responseMessage)
+    );
+    /**/
   }
 
   getAllDeliverables(){
@@ -107,29 +213,9 @@ export class DeliverablesComponent implements OnInit {
     );
   }
 
-  upload() {
-    this.currentFileUpload = this.selectedFiles.item(0);
-    this.uploadService.pushFileToStorage(this.currentFileUpload).subscribe(event => {
-      alert('File Successfully Uploaded');
-      this.selectedFiles = undefined;
-    });
-  }
-
-  selectFile(event, nombre:string) {
-    this.selectedFiles = event.target.files;
-    let body = {
-      mensaje: 'El usuario hagredo ha cargado el documento para '+ nombre,
-      timestampAlerta: new Date,
-      idConfig: 1
-    }
-    this.generateAlert.generateAlert(body).subscribe(event =>{
-      this.openModal(event.json().responseMessage);
-    });
-  }
-  
   openModal(content:string) {
     const modalRef = this.modalService.open(NgbdModalContentComponent);
-    modalRef.componentInstance.title = 'Guardar cliente';
+    modalRef.componentInstance.title = 'Entregables';
     modalRef.componentInstance.content = content;
   }
 

@@ -35,4 +35,13 @@ export class StageService {
     return this.http.post(this.url, body, this.options);
   }
 
+  deleteStageByProject(projectId, stageId) : Observable<Response>{
+    this.options = this.httpConfig.getOptions();
+    this.varGet = new Array<string>();
+    this.varGet.push(projectId);
+    this.varGet.push(stageId);
+    this.url = this.httpConfig.getUrl("deleteStageByProject", this.varGet);
+    return this.http.get(this.url, this.options);
+  }
+
 }

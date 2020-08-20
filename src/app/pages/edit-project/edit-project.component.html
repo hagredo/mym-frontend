@@ -3,7 +3,7 @@
   <div class=" row">
     <div class=" col-md-12">
       <div class=" card">
-        <div class=" card-header"><h4 class=" title">Agregar proyecto</h4></div>
+        <div class=" card-header"><h4 class=" title">Gestionar proyectos</h4></div>
         <div class=" card-body">
           <form [formGroup]="projectForm">
             <div class=" row">
@@ -92,7 +92,7 @@
                 </div>
               </div>
             </div>
-            <div class="row">
+            <div class="row" *ngIf="idRole == 1">
               <div class=" col-md-3 pr-md-1">
                 <div class=" form-group">
                   <label > VALOR CONTRATO </label>
@@ -120,7 +120,7 @@
                 </div>
               </div>
             </div>
-            <div class="row">
+            <div class="row" *ngIf="idRole == 1">
               <div class="col-md-3 pr-md-1">
                 <h5 class=" title">PLAZO DE EJECUCION INICIAL</h5>
                 <div class=" form-group">
@@ -183,10 +183,10 @@
             </div>
             <div class="row">
               <div class="col-md-7 pr-md-1">
-                <h5 class=" title">ETAPAS</h5>
+                <h5 class=" title">ENTREGAS</h5>
               </div>
             </div>
-            <div class="row">
+            <div class="row" *ngIf="idRole == 1">
               <div class="col-md-3 pr-md-1">
                 <div class=" form-group">
                   <select class=" form-control font-color" formControlName="stageSelected">
@@ -213,29 +213,34 @@
                     <thead class=" text-primary">
                       <tr>
                         <th class="td-description">Nombre</th>
-                        <th class="td-weight">Peso %</th>
+                        <th *ngIf="idRole == 1" class="td-weight">Peso %</th>
                         <th class="td-deliverables">Entregables</th>
                       </tr>
                     </thead>
                     <tbody *ngFor="let stage of stagesListSelected; index as i">
                       <tr>
                         <td class="td-description">{{stage.nombre}}</td>
-                        <td class="td-description">
-                          <input class=" form-control" type="number" [value]="stage.peso" (change)="onWeigthChange(stage.id, weigth.value)" #weigth>
+                        <td *ngIf="idRole == 1">
+                          <input class="form-control" type="number" [value]="stage.peso" 
+                              (change)="onWeigthChange(stage.id, weigth.value)" #weigth>
                         </td>
                         <td class="td-weight">
                           <p>
                             &nbsp;&nbsp;
-                            <i class="tim-icons icon-single-copy-04 cursor" (click)="showDeliverables(i)"></i>
+                            <i class="tim-icons icon-bullet-list-67 cursor" (click)="showDeliverables(i)"></i>
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <i class="tim-icons icon-simple-remove cursor" (click)="removeStage(stage.id)"></i>
+                            <i class="tim-icons icon-simple-remove cursor" 
+                                (click)="removeStage(stage.id)" *ngIf="idRole == 1"></i>
                           </p>
                         </td>
                       </tr>
                       <tr *ngIf="i == iterador" class="tr-background">
                         <app-deliverables 
+                          [projectId]="getProjectId()"
+                          [stageId]="stage.id"
                           [deliverables]="getDeliverablesByStage(stage.id)" 
-                          (deliverableSelection)="processDeliverableSelection(stage.id, $event)">
+                          (deliverableSelection)="processDeliverableSelection(stage.id, $event)"
+                          (deleteDeliverable)="deleteDeliverable(stage.id, $event)">
                         </app-deliverables>
                       </tr>
                       <br>
@@ -249,7 +254,7 @@
         </div>
         <div class=" card-footer">
           <div class="row">
-            <div class="col-md-2 pr-md-1">
+            <div *ngIf="idRole == 1" class="col-md-2 pr-md-1">
               <button 
                 class=" btn btn-fill btn-primary" 
                 (click)="saveProject()" 
@@ -258,12 +263,12 @@
                 Guardar
               </button>
             </div>
-            <div class="col-md-2 pr-md-1">
+            <div *ngIf="getProjectId() == 0 || idRole != 1" class="col-md-2 pr-md-1">
               <button 
                 class=" btn btn-fill btn-primary" 
-                (click)="goBack()"
+                (click)="goBack()" 
               >
-                Cancelar
+                {{ cancelTittle }}
               </button>
             </div>
           </div>

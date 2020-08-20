@@ -13,6 +13,9 @@ import { AuthGuardService } from 'src/app/services/auth/auth-guard.service';
 })
 export class ContractsComponent implements OnInit {
 
+  private error: boolean = false;
+  private errorMessage: string = '';
+
   public contractForm: FormGroup;
   public clicked1: boolean = false;
   public clicked2: boolean = false;
@@ -51,20 +54,38 @@ export class ContractsComponent implements OnInit {
   }
 
   saveContract() {
-    let body = this.buildContractBody();
-    if (!this.isNewContract && this.contractSelected && this.contractSelected.id > 0) {
-      body.contract.id = this.contractSelected.id
-    }
-    this.contractService.saveContract(body).subscribe(
-      response => {
-        this.openModal(response.json().responseMessage);
-        this.cleanForm();
-        this.getAllContracts();
-      },
-      error => {
-        this.openModal('Error: ' + error.responseMessage);
+    this.validateContractWeigth();
+    if (!this.error) {
+      let body = this.buildContractBody();
+      if (!this.isNewContract && this.contractSelected && this.contractSelected.id > 0) {
+        body.contract.id = this.contractSelected.id
       }
-    );
+      this.contractService.saveContract(body).subscribe(
+        response => {
+          this.openModal(response.json().responseMessage);
+          this.cleanForm();
+          this.getAllContracts();
+        },
+        error => {
+          this.openModal('Error: ' + error.responseMessage);
+        }
+      );
+    } else {
+      this.openModal(this.errorMessage);
+      this.error = false;
+      this.errorMessage = '';
+    }
+  }
+
+  validateContractWeigth() {
+    let conttractWeigth = 0;
+    this.projectListToSend.forEach(project => {
+      conttractWeigth += parseInt(project.weight);
+    });
+    if (conttractWeigth != 100) {
+      this.error = true;
+      this.errorMessage = 'Error: Los Proyectos del Contrato deben sumar 100';
+    }
   }
 
   buildContractBody():any {
