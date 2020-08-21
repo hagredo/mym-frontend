@@ -3,6 +3,9 @@ import Chart from 'chart.js';
 import { Router } from '@angular/router';
 import { ProjectService } from 'src/app/services/projects/project.service';
 import { AuthGuardService } from 'src/app/services/auth/auth-guard.service';
+import { ChartService } from 'src/app/services/chart/chart.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbdModalContentComponent } from 'src/app/components/ngbd-modal-content/ngbd-modal-content.component';
 
 @Component({
   selector: "app-dashboard",
@@ -23,13 +26,17 @@ export class DashboardComponent implements OnInit {
   public projectSelected: any;
   public grafica: any = 0;
   public idRole: number;
+  public showChart: boolean = false;
 
   constructor(
     private router: Router,
     private projectService : ProjectService,
+    private chartService : ChartService,
+    private modalService: NgbModal,
     private authService: AuthGuardService
   ) {
       this.projectSelected = {};
+      this.datasets = new Array<any>();
   }
 
   addProject() {
@@ -60,7 +67,7 @@ export class DashboardComponent implements OnInit {
       if (project.id == projectId)
         this.projectSelected = project;
     });
-    console.log(this.grafica);
+    this.generateCharts();
     if(this.grafica == 0){
       this.data = this.datasets[1];
       this.grafica = 1;
@@ -92,6 +99,7 @@ export class DashboardComponent implements OnInit {
             project.estado = 'FINALIZADO'
           }
         });
+        this.generateCharts();
       },
       error => {
         console.log('Error al cargar lista de projectos');
@@ -102,6 +110,9 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.validateRole();
     this.getAllProjects();
+  }
+
+  generateCharts() {
     var gradientChartOptionsConfigurationWithTooltipBlue: any = {
       maintainAspectRatio: false,
       legend: {
@@ -466,54 +477,62 @@ export class DashboardComponent implements OnInit {
 
     });*/
 
-
-
-    var chart_labels = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
-    this.datasets = [
-      /*[100, 70, 90, 70, 85, 60, 75, 60, 90, 80, 110, 100],*/
-      [0, 5, 15, 25, 28, 32, 34],
-      [0, 10, 12, 39, 45, 50, 68, 79, 85]
-      
-    ];
-    this.data = this.datasets[0];
-
-
-
-    this.canvas = document.getElementById("chartBig1");
-    this.ctx = this.canvas.getContext("2d");
-
-    var gradientStroke = this.ctx.createLinearGradient(0, 230, 0, 50);
-
-    gradientStroke.addColorStop(1, 'rgba(233,32,16,0.2)');
-    gradientStroke.addColorStop(0.4, 'rgba(233,32,16,0.0)');
-    gradientStroke.addColorStop(0, 'rgba(233,32,16,0)'); //red colors
-
-    var config = {
-      type: 'line',
-      data: {
-        labels: chart_labels,
-        datasets: [{
-          label: "My First dataset",
-          fill: true,
-          backgroundColor: gradientStroke,
-          borderColor: '#ec250d',
-          borderWidth: 2,
-          borderDash: [],
-          borderDashOffset: 0.0,
-          pointBackgroundColor: '#ec250d',
-          pointBorderColor: 'rgba(255,255,255,0)',
-          pointHoverBackgroundColor: '#ec250d',
-          pointBorderWidth: 20,
-          pointHoverRadius: 4,
-          pointHoverBorderWidth: 15,
-          pointRadius: 4,
-          data: this.data,
-        }]
+    this.chartService.getAdvancedChartByProject(this.projectSelected.id).subscribe(
+      res => {
+        let responseJson: any = res.json();
+        this.data = responseJson.dataList;
+        var chart_labels = responseJson.labelList;
+        if (this.data && this.data.length > 0) {
+          this.showChart = true;
+          /*['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
+          this.datasets = [
+            [100, 70, 90, 70, 85, 60, 75, 60, 90, 80, 110, 100],
+            [0, 5, 15, 25, 28, 32, 94, 34, 37, 45, 72],
+            [0, 10, 12, 39, 45, 50, 68, 79, 85, 89, 95, 98]
+          ];
+          this.data = this.datasets[0];*/
+          setTimeout(() => {
+            this.canvas = document.getElementById("chartBig1");
+            this.ctx = this.canvas.getContext("2d");
+        
+            var gradientStroke = this.ctx.createLinearGradient(0, 230, 0, 50);
+        
+            gradientStroke.addColorStop(1, 'rgba(233,32,16,0.2)');
+            gradientStroke.addColorStop(0.4, 'rgba(233,32,16,0.0)');
+            gradientStroke.addColorStop(0, 'rgba(233,32,16,0)'); //red colors
+        
+            var config = {
+              type: 'line',
+              data: {
+                labels: chart_labels,
+                datasets: [{
+                  label: "My First dataset",
+                  fill: true,
+                  backgroundColor: gradientStroke,
+                  borderColor: '#ec250d',
+                  borderWidth: 2,
+                  borderDash: [],
+                  borderDashOffset: 0.0,
+                  pointBackgroundColor: '#ec250d',
+                  pointBorderColor: 'rgba(255,255,255,0)',
+                  pointHoverBackgroundColor: '#ec250d',
+                  pointBorderWidth: 20,
+                  pointHoverRadius: 4,
+                  pointHoverBorderWidth: 15,
+                  pointRadius: 4,
+                  data: this.data,
+                }]
+              },
+              options: gradientChartOptionsConfigurationWithTooltipRed
+            };
+            this.myChartData = new Chart(this.ctx, config);
+          }, 500);
+        } else {
+          this.showChart = false;
+        }
       },
-      options: gradientChartOptionsConfigurationWithTooltipRed
-    };
-    this.myChartData = new Chart(this.ctx, config);
-
+      error => this.openModal('Error cargando información del proyecto: ' + error.responseMessage)
+    );
 
     /*this.canvas = document.getElementById("CountryChart");
     this.ctx  = this.canvas.getContext("2d");
@@ -552,6 +571,12 @@ export class DashboardComponent implements OnInit {
   public updateOptions() {
     this.myChartData.data.datasets[0].data = this.data;
     this.myChartData.update();
+  }
+
+  openModal(content:string) {
+    const modalRef = this.modalService.open(NgbdModalContentComponent);
+    modalRef.componentInstance.title = 'Entregables';
+    modalRef.componentInstance.content = content;
   }
 
 }

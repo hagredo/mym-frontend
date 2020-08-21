@@ -108,13 +108,13 @@
     </div>
   </div>
 
-  <div class=" row">
+  <div *ngIf="showChart" class=" row">
     <div class=" col-12">
       <div class=" card card-chart">
         <div class=" card-header">
           <div class=" row">
             <div class=" col-sm-6 text-left">
-              <h2 class=" card-title">{{projectSelected.nombre | truncate: 30}}</h2>
+              <h2 class=" card-title">{{projectSelected.codigoProyecto | truncate: 30}}</h2>
             </div>
             <!--<div class=" col-sm-6">
               <div

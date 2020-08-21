@@ -39,6 +39,7 @@ import { UploadfileService } from 'src/app/services/uploadfiles/uploadfile.servi
 import { GenerateAlertService } from 'src/app/services/generateAlerts/generate-alert.service';
 import { PaymentsComponent } from 'src/app/pages/payments/payments.component';
 import { PaymentsService } from 'src/app/services/payments/payments.service';
+import { ChartService } from 'src/app/services/chart/chart.service';
 
 @NgModule({
   imports: [
@@ -86,6 +87,7 @@ import { PaymentsService } from 'src/app/services/payments/payments.service';
     ProjectService,
     UploadfileService,
     GenerateAlertService,
+    ChartService,
     ContractService
   ]
 })
