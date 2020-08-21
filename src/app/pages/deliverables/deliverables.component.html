@@ -27,20 +27,21 @@
           <div *ngIf="idRole == 1" class="col-md-2">
             <input style="height:70%; width: 80%;" class="form-control" type="number" [value]="deliverable.peso" (change)="onWeigthChange(deliverable.id, weigth.value)" #weigth>
           </div>
-          <div *ngIf="projectId > 0" class="col-md-1 pr-md-1" [ngClass]="{'offset-2': idRole != 1}">
+          <div *ngIf="projectId > 0" class="col-md-1 pr-md-1" [ngClass]="{'offset-1': idRole != 1}">
             <div class="form-group">
-              <i class="tim-icons icon-upload" data-toggle="modal" for="Cargar"></i>
+              <i class="tim-icons icon-upload" [ngClass]="{'completed': deliverable.idArchivo > 0}" data-toggle="modal" for="Cargar"></i>
               <input title="Subir archivo" #inputFile type="file" name="inputFile" class="form-control-file" id="Cargar" (change)="selectFile($event, deliverable.id)">
             </div>
           </div>
-          <div *ngIf="projectId > 0" class="col-md-1 pr-md-1">
+          <div *ngIf="projectId > 0" class="col-md-1 pr-md-1" [ngClass]="{'completed': deliverable.estado == 'A' || deliverable.estado == 'F'}">
             <i title="Validar entregable" class="tim-icons icon-cloud-upload-94 cursor" (click)="updateDeliverable(deliverable.id,'A')"></i>
           </div>
           <div *ngIf="idRole == 1 && projectId > 0" class="col-md-1 pr-md-1">
             <i title="Descargar archivo" class="tim-icons icon-cloud-download-93 cursor" (click)="downloadFile(deliverable.id)"></i>
           </div>
-          <div *ngIf="idRole == 1 && projectId > 0" class="col-md-1 pr-md-1">
-            <i title="Finalizar entregable" class="tim-icons icon-check-2 cursor" (click)="updateDeliverable(deliverable.id,'F')"></i>
+          <div *ngIf="projectId > 0" class="col-md-1 pr-md-1" [ngClass]="{'completed': deliverable.estado == 'F'}">
+            <i *ngIf="idRole == 1" title="Finalizar entregable" class="tim-icons icon-check-2 cursor" (click)="updateDeliverable(deliverable.id,'F')"></i>
+            <i *ngIf="idRole != 1" title="Entregable finalizado" class="tim-icons icon-check-2"></i>
           </div> 
           <div *ngIf="idRole == 1 && projectId > 0" class="col-md-1 cursor" (click)="removeDeliverable(deliverable.id)">
             <i title="Eliminar entregable" class=" tim-icons icon-simple-remove"></i>

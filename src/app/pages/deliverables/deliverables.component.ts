@@ -71,7 +71,9 @@ export class DeliverablesComponent implements OnInit {
     let deliverableSelected = {
       id: (deliverable) ? deliverable.id : parseInt(this.deliverableForm.get('deliverableSelected').value),
       nombre: '',
-      peso: (deliverable && deliverable.weigth) ? deliverable.weigth : 0
+      peso: (deliverable && deliverable.weigth) ? deliverable.weigth : 0,
+      idArchivo: (deliverable && deliverable.fileId) ? deliverable.fileId : 0,
+      estado: (deliverable && deliverable.status) ? deliverable.status : 'I'
     };
     this.deliverablesList.forEach(deliverableTemp => {
       if (deliverableTemp.id == ((deliverable) ? deliverable.id : 
@@ -133,6 +135,12 @@ export class DeliverablesComponent implements OnInit {
             res => {
               let responseJson: any = res.json();
               this.openModal(responseJson.responseMessage);
+              for (let index = 0; index < this.deliverablesListSelected.length; index++) {
+                const deliverable = this.deliverablesListSelected[index];
+                if (deliverable.id == deliverableId) {
+                  this.deliverablesListSelected[index].idArchivo = bodyDb.idArchivo;
+                }
+              }
             },
             error => this.openModal('Error guardando información del archivo: ' + error.responseMessage)
           );
@@ -156,6 +164,12 @@ export class DeliverablesComponent implements OnInit {
       res => {
         let responseJson: any = res.json();
         this.openModal(responseJson.responseMessage);
+        for (let index = 0; index < this.deliverablesListSelected.length; index++) {
+          const deliverable = this.deliverablesListSelected[index];
+          if (deliverable.id == deliverableId) {
+            this.deliverablesListSelected[index].estado = status;
+          }
+        }
       },
       error => this.openModal('Error guardando información del archivo: ' + error.responseMessage)
     );  
@@ -207,9 +221,7 @@ export class DeliverablesComponent implements OnInit {
         let resJson: any = response.json();
         this.deliverablesList = resJson.deliverableList;
       },
-      error => {
-        console.log('Error al cargar lista de entregables');
-      }
+      error => this.openModal('Error al cargar lista de entregables: ' + error.responseMessage)
     );
   }
 

@@ -8,6 +8,7 @@ import { HttpConfig } from 'src/app/util/HttpConfig';
 })
 export class ShowAlertService {
   private options: RequestOptions;
+  private varGet: Array<string>;
   private url: string;
   
   constructor(private http: Http, private httpConfig : HttpConfig) { }
@@ -17,4 +18,13 @@ export class ShowAlertService {
     this.url = this.httpConfig.getUrl("getAllAlerts");
     return this.http.get(this.url, this.options);
   }
+  
+  markAlertAsRead(alertId) : Observable<Response> {
+    this.options = this.httpConfig.getOptions();
+    this.varGet = new Array<string>();
+    this.varGet.push(alertId);
+    this.url = this.httpConfig.getUrl("markAlertAsRead", this.varGet);
+    return this.http.get(this.url, this.options);
+  }
+  
 }

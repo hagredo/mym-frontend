@@ -37,7 +37,8 @@ import { ContractService } from 'src/app/services/contract/contract.service';
 import { ContractsComponent } from 'src/app/pages/contracts/contracts.component';
 import { UploadfileService } from 'src/app/services/uploadfiles/uploadfile.service';
 import { GenerateAlertService } from 'src/app/services/generateAlerts/generate-alert.service';
-import { ManageComponent } from 'src/app/pages/manage/manage.component';
+import { PaymentsComponent } from 'src/app/pages/payments/payments.component';
+import { PaymentsService } from 'src/app/services/payments/payments.service';
 
 @NgModule({
   imports: [
@@ -64,8 +65,8 @@ import { ManageComponent } from 'src/app/pages/manage/manage.component';
     BusinessCardComponent, 
     TeamsComponent,
     PaymentMethodsComponent, 
-    ContractsComponent, 
-    ManageComponent, 
+    PaymentsComponent, 
+    ContractsComponent,
     TruncatePipe
   ],
   entryComponents: [
@@ -80,6 +81,7 @@ import { ManageComponent } from 'src/app/pages/manage/manage.component';
     CityService,
     SaveService,
     PaymentMethodService,
+    PaymentsService,
     DeliverableService,
     ProjectService,
     UploadfileService,

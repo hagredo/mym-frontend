@@ -47,6 +47,11 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(['/edit-project']);
   }
 
+  goToPayments() {
+    this.projectService.setProject(this.projectSelected);
+    this.router.navigate(['/payments']);
+  }
+
   selectProject(projectId:number) {
     this.clicked = false;
     this.clicked1 = false;

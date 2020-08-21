@@ -158,7 +158,9 @@ export class EditProjectComponent implements OnInit {
       deliverablesProject.forEach(deliberableStage => {
         let deliverableTemp = {
           id: deliberableStage.id.idEntregable,
-          weigth: deliberableStage.peso
+          fileId: (deliberableStage.idArchivo != null) ? deliberableStage.idArchivo : 0,
+          weigth: deliberableStage.peso,
+          status: deliberableStage.estado
         }
         this.processDeliverableSelection(deliberableStage.id.idEtapa, deliverableTemp);
       });
@@ -307,7 +309,6 @@ export class EditProjectComponent implements OnInit {
       if (stage.id == this.projectForm.get('stageSelected').value)
       stageSelected = stage;
     });
-    console.log(JSON.stringify(this.stagesListSelected));
     let exists = false;
     for (let index = 0; index < this.stagesListSelected.length; index++) {
       const stage = this.stagesListSelected[index];
@@ -318,7 +319,6 @@ export class EditProjectComponent implements OnInit {
     if(!exists && stageSelected) {
       this.stagesListSelected.push(stageSelected);
     }
-    console.log(JSON.stringify(this.stagesListSelected));
   }
 
   removeStage(stageId:number) {
@@ -380,7 +380,9 @@ export class EditProjectComponent implements OnInit {
     let deliverableArray = this.deliverablesMap.get(stageId);
     let deliverableTemp = {
       id: deliberable.id,
-      weigth: (deliberable) ? deliberable.weigth : 0
+      weigth: (deliberable && deliberable.weigth) ? deliberable.weigth : 0,
+      fileId: (deliberable && deliberable.fileId > 0) ? deliberable.fileId : 0,
+      status: (deliberable && deliberable.status) ? deliberable.status : 'I'
     }
     if (deliverableArray) {
       let indexArray = -1;

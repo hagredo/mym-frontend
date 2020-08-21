@@ -13,8 +13,7 @@ import { ClientesComponent } from 'src/app/pages/clientes/clientes.component';
 import { TeamsComponent } from 'src/app/pages/teams/teams.component';
 import { PaymentMethodsComponent } from 'src/app/pages/payment-methods/payment-methods.component';
 import { ContractsComponent } from 'src/app/pages/contracts/contracts.component';
-import { ManageComponent } from 'src/app/pages/manage/manage.component';
-// import { RtlComponent } from "../../pages/rtl/rtl.component";
+import { PaymentsComponent } from 'src/app/pages/payments/payments.component';
 
 export const AdminLayoutRoutes: Routes = [
   { path: "dashboard", component: DashboardComponent, canActivate: [AuthGuardService] },
@@ -26,8 +25,8 @@ export const AdminLayoutRoutes: Routes = [
   { path: "clients", component: ClientesComponent, canActivate: [AuthGuardService] },
   { path: "teams", component: TeamsComponent, canActivate: [AuthGuardService] },
   { path: "payment-methods", component: PaymentMethodsComponent, canActivate: [AuthGuardService] },
+  { path: "payments", component: PaymentsComponent, canActivate: [AuthGuardService] },
   { path: "tables", component: TablesComponent, canActivate: [AuthGuardService] },
   { path: "typography", component: TypographyComponent, canActivate: [AuthGuardService] },
-  { path: "icons", component: IconsComponent, canActivate: [AuthGuardService] },
-  { path: "manage", component: ManageComponent, canActivate: [AuthGuardService] }
+  { path: "icons", component: IconsComponent, canActivate: [AuthGuardService] }
 ];

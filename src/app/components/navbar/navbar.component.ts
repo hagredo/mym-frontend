@@ -6,6 +6,8 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { AuthGuardService } from 'src/app/services/auth/auth-guard.service';
 import { ContractService } from 'src/app/services/contract/contract.service';
 import { ShowAlertService } from 'src/app/services/showAlerts/show-alert.service';
+import { NgbdModalContentComponent } from '../ngbd-modal-content/ngbd-modal-content.component';
+import { interval, Subscription } from 'rxjs';
 
 @Component({
   selector: "app-navbar",
@@ -13,16 +15,20 @@ import { ShowAlertService } from 'src/app/services/showAlerts/show-alert.service
   styleUrls: ["./navbar.component.css"]
 })
 export class NavbarComponent implements OnInit, OnDestroy {
+
   private listTitles: any[];
   location: Location;
   mobile_menu_visible: any = 0;
   private toggleButton: any;
   private sidebarVisible: boolean;
-  private alertsList : any;
+  private alertsList : Array<any>;
 
   public isCollapsed = true;
+  public isThereAlert = false;
 
   closeResult: string;
+  subscription: Subscription;
+  public idRole: number;
 
   constructor(
     location: Location,
@@ -34,7 +40,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
   ) {
     this.location = location;
     this.sidebarVisible = false;
+    //emit value in sequence every 5 min
+    const source = interval(300000);
+    const text = 'Your Text Here';
+    this.subscription = source.subscribe(val => this.getAllAlerts());
   }
+
   // function that adds color white/transparent to the navbar on resize (this is for the collapse)
    updateColor = () => {
    var navbar = document.getElementsByClassName('navbar')[0];
@@ -46,7 +57,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
        navbar.classList.add('navbar-transparent');
      }
    };
+
   ngOnInit() {
+    this.validateRole();
     this.getAllAlerts();
     window.addEventListener("resize", this.updateColor);
     this.listTitles = ROUTES.filter(listTitle => listTitle);
@@ -62,10 +75,29 @@ export class NavbarComponent implements OnInit, OnDestroy {
     });
   }
 
+  validateRole() {
+    this.idRole = this.authService.userRole;
+  }
+
+  markAlertAsRead(alertId) {
+    this.showAlert.markAlertAsRead(alertId).subscribe(
+      response => {
+        this.getAllAlerts();
+        setTimeout(() => {
+          let resJson: any = response.json();
+        }, 100);
+      },
+      error => this.open(error.responseMessage)
+    );
+  }
+
   getAllAlerts(){
+    this.alertsList = new Array<any>();
+    this.isThereAlert = false;
     this.showAlert.getAllAlerts().subscribe(response =>{
       let resJson: any = response.json();
       this.alertsList = resJson.alertsList;
+      this.isThereAlert = this.alertsList.length > 0;
     });
   }
 
@@ -205,11 +237,18 @@ export class NavbarComponent implements OnInit, OnDestroy {
     }
   }
 
+  openModal(content:string) {
+    const modalRef = this.modalService.open(NgbdModalContentComponent);
+    modalRef.componentInstance.title = 'Alertas';
+    modalRef.componentInstance.content = content;
+  }
+
   logOut() {
     this.authService.logOut();
   }
 
   ngOnDestroy(){
-     window.removeEventListener("resize", this.updateColor);
+    this.subscription.unsubscribe();
+    window.removeEventListener("resize", this.updateColor);
   }
 }

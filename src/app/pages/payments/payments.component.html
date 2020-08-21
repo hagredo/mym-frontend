@@ -1,0 +1,124 @@
+<div class=" content">
+
+  <div class=" row">
+    <div class=" col-md-8 offset-2">
+      <div class=" card">
+        <div class=" card-header"><h4 class=" title">GUARDAR PAGO</h4></div>
+        <div class=" card-body">
+          <form [formGroup]="paymentForm">
+            <div class=" row">
+              <div class=" col-md-5 pr-md-1">
+                <div class=" form-group">
+                  <label> Valor del pago </label>
+                  <input
+                    class=" form-control"
+                    placeholder="Valor del pago"
+                    type="number"
+                    formControlName="paymentValue"
+                  />
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class=" card-footer">
+          <div class="row">
+            <div class="col-md-3 pr-md-1">
+              <button 
+                class=" btn btn-fill btn-danger" 
+                (click)="savePayment()" 
+                [disabled]="!paymentForm.valid"
+              >
+                Guardar
+              </button>
+            </div>
+            <div class="col-md-3 pr-md-1">
+              <button 
+                class=" btn btn-fill btn-primary" 
+                (click)="cleanForm()"
+              >
+                Cancelar
+              </button>
+            </div>
+            <div class="col-md-3 pr-md-1">
+              <button 
+                class=" btn btn-fill btn-primary" 
+                (click)="goBack()"
+              >
+                Volver
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class=" row">
+    <div class=" col-8 offset-2">
+      <div class=" card">
+        <div class=" card-header">
+          <div class=" row">
+            <div class=" col-sm-6 text-left">
+              <h5 class=" card-title">Total: {{totalValue | currency:'COP':'symbol-narrow':'4.2-2'}} 
+                - Pagado: {{paidValue | currency:'COP':'symbol-narrow':'4.2-2'}} - {{percent | number:'2.1-2'}}%</h5>
+            </div>
+            <div class=" col-sm-6">
+              <div
+                class=" btn-group btn-group-toggle float-right"
+                data-toggle="buttons"
+              >
+                <label class=" btn btn-sm btn-danger btn-simple" (click)="editPayment();clicked1=true;clicked2=false" [ngClass]="{'active':clicked1===true}">
+                  <input class=" d-none" name="options" type="radio" />
+                  <span
+                    class=" d-none d-sm-block d-md-block d-lg-block d-xl-block"
+                  >
+                    Editar pago
+                  </span>
+                  <span class=" d-block d-sm-none">
+                    <i class=" tim-icons icon-tap-02"> </i>
+                  </span>
+                </label>
+                <label class=" btn btn-sm btn-danger btn-simple" (click)="deletePayment();clicked1=false;clicked2=true" [ngClass]="{'active':clicked2===true}">
+                  <input class=" d-none" name="options" type="radio" />
+                  <span
+                    class=" d-none d-sm-block d-md-block d-lg-block d-xl-block"
+                  >
+                    Eliminar pago
+                  </span>
+                  <span class=" d-block d-sm-none">
+                    <i class=" tim-icons icon-tap-02"> </i>
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class=" card-body">
+          <div class=" table-responsive">
+            <table class=" table tablesorter" id="">
+              <thead class=" text-primary">
+                <tr>
+                  <th class=" text-center">Fecha pago</th>
+                  <th class=" text-center">Valor pago</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr 
+                  *ngFor="let payment of paymentList; let i = index" 
+                  [ngClass]="{resaltado: payment.id == paymentSelected.id}" 
+                  class="cursor"
+                  (click)="selectPayment(payment.id)"
+                >
+                  <td class=" text-center">{{ payment.fecha | date:"mediumDate" }}</td>
+                  <td class=" text-center">{{ payment.valorPago | currency:'COP':'symbol-narrow':'4.2-2' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
