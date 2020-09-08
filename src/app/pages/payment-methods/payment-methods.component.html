@@ -58,7 +58,7 @@
               <button 
                 class=" btn btn-fill btn-danger" 
                 (click)="savePaymentMethod()" 
-                [disabled]="!paymentMethodForm.valid || !paymentArray.controls.length > 0"
+                [disabled]="!paymentMethodForm.valid || !(paymentArray.controls.length > 0)"
               >
                 Guardar
               </button>

@@ -17,7 +17,7 @@ export class NotificationsComponent implements OnInit {
 
   constructor(private toastr: ToastrService) {}
 
-  showNotification(from, align){
+  /*showNotification(from, align){
 
       const color = Math.floor((Math.random() * 5) + 1);
 
@@ -70,7 +70,7 @@ export class NotificationsComponent implements OnInit {
         default:
         break;
       }
-  }
+  }*/
 
   ngOnInit() {}
 }

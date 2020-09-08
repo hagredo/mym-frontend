@@ -55,12 +55,6 @@ export class DeliverablesComponent implements OnInit {
   ngOnInit() {
     this.validateRole();
     this.getAllDeliverables();
-    if (this.deliverables)
-      setTimeout(() => {
-        this.deliverables.forEach(deliverable => {
-          this.addDeliverable(deliverable);
-        });
-      }, 100);
   }
 
   validateRole() {
@@ -189,14 +183,14 @@ export class DeliverablesComponent implements OnInit {
           pdf.name = responseJson.file.name;
           pdf.path = responseJson.file.path;
           let name = 'guia-articulo-academico.pdf'
-          let path = 'https://www.usergioarboleda.edu.co/wp-content/uploads/2016/01/guia-articulo-academico.pdf';
-          this.uploadService.getFileBlob(/*pdf.path*/path).subscribe(
+          let path = 'https://si.ua.es/es/documentos/documentacion/pdf-s/mozilla12-pdf.pdf';
+          this.uploadService.getFileBlob(pdf.path/*path*/).subscribe(
             res => {
               pdf.content = res.blob();
               let link = document.createElement("a");
               link.href = this.sanitizer.sanitize(SecurityContext.RESOURCE_URL, 
                 this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(pdf.content)));
-              link.download = /*pdf.name*/name;
+              link.download = pdf.name/*name*/;
               link.dispatchEvent(new MouseEvent("click"));
             },
             error => this.openModal('Error al descargar el archivo')
@@ -210,7 +204,7 @@ export class DeliverablesComponent implements OnInit {
     /**/
   }
 
-  getAllDeliverables(){
+  getAllDeliverables() {
     let deliverableDefault = {
       id: 0
     }
@@ -220,6 +214,10 @@ export class DeliverablesComponent implements OnInit {
       response => {
         let resJson: any = response.json();
         this.deliverablesList = resJson.deliverableList;
+        if (this.deliverables)
+        this.deliverables.forEach(deliverable => {
+          this.addDeliverable(deliverable);
+        });
       },
       error => this.openModal('Error al cargar lista de entregables: ' + error.responseMessage)
     );

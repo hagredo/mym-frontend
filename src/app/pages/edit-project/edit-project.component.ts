@@ -88,15 +88,9 @@ export class EditProjectComponent implements OnInit {
     this.getAllContracts();
     this.getAllClients();
     this.getAllCities();
-    this.getAllStages();
     this.getAllTeams();
     this.getAllPaymentMethods(); 
-    if (this.projectSelected && this.projectSelected.idCliente > 0) {
-      this.isNotSelectedProject = false;
-      this.fillForm();
-    } else {
-      this.isNotSelectedProject = true;
-    }
+    this.getAllStages();
   }
 
   validateRole() {
@@ -491,6 +485,12 @@ export class EditProjectComponent implements OnInit {
           stage.peso = 0;
           this.stagesListSelectedMap.set(stage.id, stage.nombre);
         });
+        if (this.projectSelected && this.projectSelected.idCliente > 0) {
+          this.isNotSelectedProject = false;
+          this.fillForm();
+        } else {
+          this.isNotSelectedProject = true;
+        }
       },
       error => {
         console.log('Error al cargar lista de etapas');

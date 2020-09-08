@@ -3,10 +3,13 @@ import { UserService } from 'src/app/services/user/user.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AuthGuardService } from 'src/app/services/auth/auth-guard.service';
 import { Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbdModalContentComponent } from 'src/app/components/ngbd-modal-content/ngbd-modal-content.component';
 
 @Component({
   selector: "app-user",
-  templateUrl: "user.component.html"
+  templateUrl: "user.component.html",
+  providers: [NgbModal]
 })
 export class UserComponent implements OnInit {
 
@@ -16,6 +19,7 @@ export class UserComponent implements OnInit {
   constructor(
     private userService: UserService, 
     private authService: AuthGuardService,
+    private modalService: NgbModal,
     private router: Router
   ) {
     this.userForm = new FormGroup({
@@ -33,14 +37,24 @@ export class UserComponent implements OnInit {
     this.userService.validUser(userName, passwd).subscribe(
       response => {
         let resJson: any = response.json();
-        this.authService.setToken(resJson.user.token);
-        this.authService.userRole = resJson.user.idRol;
-        this.router.navigate(['/dashboard']);
+        if (resJson.user && resJson.user.idRol > 0) {
+          this.authService.setToken(resJson.user.token);
+          this.authService.userRole = resJson.user.idRol;
+          this.router.navigate(['/dashboard']);
+        } else {
+          this.openModal('Credenciales invalidas')
+        }
       },
       error => {
-        console.log('Credenciales invalidas');
+        this.openModal('Error de logueo: ' + error.responseMessage)
       }
     );
+  }
+
+  openModal(content:string) {
+    const modalRef = this.modalService.open(NgbdModalContentComponent);
+    modalRef.componentInstance.title = 'Login';
+    modalRef.componentInstance.content = content;
   }
 
 }
