@@ -18,6 +18,7 @@ export class ClientesComponent implements OnInit {
   public clientList : any;
   public clientSelected: any;
   public idRole: number;
+  public isNewClient: boolean = true;
 
   constructor(
     private clientsService : ClientsService,
@@ -44,12 +45,9 @@ export class ClientesComponent implements OnInit {
   }
 
   saveClient() {
-    let body = {
-      id: this.clientForm.get('identification').value,
-      nombre: this.clientForm.get('clientName').value,
-      direccion: this.clientForm.get('addressClient').value,
-      telefono: this.clientForm.get('clientPhone').value,
-      contacto: this.clientForm.get('contact').value
+    let body = this.buildBody();
+    if (!this.isNewClient && this.clientSelected && this.clientSelected.id > 0) {
+      body.id = this.clientSelected.id
     }
     this.clientsService.saveClient(body).subscribe(
       response => {
@@ -61,6 +59,17 @@ export class ClientesComponent implements OnInit {
         this.openModal('Error: ' + error.responseMessage);
       }
     );
+  }
+
+  buildBody(): any {
+    let body = {
+      clientId: this.clientForm.get('identification').value,
+      nombre: this.clientForm.get('clientName').value,
+      direccion: this.clientForm.get('addressClient').value,
+      telefono: this.clientForm.get('clientPhone').value,
+      contacto: this.clientForm.get('contact').value
+    }
+    return body;
   }
 
   openModal(content:string) {
@@ -87,10 +96,12 @@ export class ClientesComponent implements OnInit {
     this.clientForm.get('contact').setValue('');
     this.clicked1 = false;
     this.clicked2 = false;
+    this.isNewClient = true;
   }
 
   editClient() {
-    this.clientForm.get('identification').setValue(this.clientSelected.id);
+    this.isNewClient = false;
+    this.clientForm.get('identification').setValue(this.clientSelected.clientId);
     this.clientForm.get('clientName').setValue(this.clientSelected.nombre);
     this.clientForm.get('addressClient').setValue(this.clientSelected.direccion);
     this.clientForm.get('clientPhone').setValue(this.clientSelected.telefono);

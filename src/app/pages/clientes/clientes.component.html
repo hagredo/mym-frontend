@@ -12,7 +12,7 @@
                   <input
                     class=" form-control"
                     placeholder="Identificación cliente"
-                    type="number"
+                    type="text"
                     formControlName="identification"
                   />
                 </div>
@@ -157,7 +157,7 @@
                   class="cursor"
                   (click)="selectClient(client.id)"
                 >
-                  <td>{{ client.id }}</td>
+                  <td>{{ client.clientId }}</td>
                   <td>{{ client.nombre }}</td>
                   <td>{{ client.direccion }}</td>
                   <td class=" text-center">{{ client.telefono }}</td>

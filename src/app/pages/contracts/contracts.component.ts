@@ -79,9 +79,13 @@ export class ContractsComponent implements OnInit {
 
   validateContractWeigth() {
     let conttractWeigth = 0;
-    this.projectListToSend.forEach(project => {
-      conttractWeigth += parseInt(project.weight);
-    });
+    if (this.projectListToSend.length > 0) {
+      this.projectListToSend.forEach(project => {
+        conttractWeigth += parseInt(project.weight);
+      });
+    } else {
+      conttractWeigth = 100;
+    }
     if (conttractWeigth != 100) {
       this.error = true;
       this.errorMessage = 'Error: Los Proyectos del Contrato deben sumar 100';
