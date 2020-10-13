@@ -168,7 +168,9 @@ export class TeamsComponent implements OnInit {
         this.teamSelected = this.teamList[0];
       },
       error => {
-        this.openModal('Error: ' + 'Error al cargar lista de equipos');
+        if (error.status != 404) {
+          this.openModal('Error: ' + 'Error al cargar lista de equipos');
+        }
       }
     );
   }
@@ -185,7 +187,9 @@ export class TeamsComponent implements OnInit {
         this.userList = resJson.userList;
       },
       error => {
-        this.openModal('Error: ' + 'Error al cargar lista de integrantes');
+        if (error.status != 404) {
+          this.openModal('Error: ' + 'Error al cargar lista de integrantes');
+        }
       }
     );
   }

@@ -89,6 +89,7 @@
               <div
                 class=" btn-group btn-group-toggle float-right"
                 data-toggle="buttons"
+                *ngIf="paymentMethodList.length > 0"
               >
                 <label class=" btn btn-sm btn-danger btn-simple" (click)="deletePaymentMethod();clicked2=true" [ngClass]="{'active':clicked2===true}">
                   <input class=" d-none" name="options" type="radio" />

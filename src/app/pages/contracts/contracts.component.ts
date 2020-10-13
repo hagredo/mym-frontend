@@ -182,7 +182,9 @@ export class ContractsComponent implements OnInit {
         this.contractSelected = this.contractList[0];
       },
       error => {
-        this.openModal('Error: ' + 'Error al cargar lista de contratos');
+        if (error.status != 404) {
+          this.openModal('Error: ' + 'Error al cargar lista de contratos');
+        }
       }
     );
   }
